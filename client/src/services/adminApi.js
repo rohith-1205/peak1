@@ -5,10 +5,9 @@
  */
 
 import axios from 'axios';
-import { API_BASE_URL } from '../config/env';
 
 const adminApi = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: '/api/v1',
   headers: {
     'Content-Type': 'application/json'
   }

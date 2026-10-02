@@ -7,7 +7,6 @@ import QrScannerPanel from '../components/gate/QrScannerPanel';
 import ManualEntryPanel from '../components/gate/ManualEntryPanel';
 import CheckInResultCard from '../components/gate/CheckInResultCard';
 import RecentScansList from '../components/gate/RecentScansList';
-import { SOCKET_URL } from '../config/env';
 
 export default function AdminGatePage() {
   const [events, setEvents] = useState([]);
@@ -72,7 +71,7 @@ export default function AdminGatePage() {
 
   // Real-time WebSocket Updates
   useEffect(() => {
-    const socket = io(SOCKET_URL);
+    const socket = io(import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:5000');
     
     socket.on('checkInUpdated', (data) => {
       // If the event matches what the current gate is scanning (or if "All Events" is selected)

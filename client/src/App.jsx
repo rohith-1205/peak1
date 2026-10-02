@@ -8,7 +8,6 @@ import ScrollToTop from './components/ScrollToTop';
 import PageTransition from './components/PageTransition';
 import AdminLayout from './components/AdminLayout';
 import { ProtectedRoute, AdminRoute } from './components/ProtectedRoutes';
-import EnvBadge from './components/EnvBadge';
 
 import Home from './pages/Home';
 import About from './pages/About';
@@ -77,8 +76,6 @@ export default function App() {
 
       {/* Render Public Footer ONLY on Public Routes */}
       {!isAdminRoute && <Footer />}
-      
-      <EnvBadge />
     </div>
   );
 }

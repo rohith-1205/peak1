@@ -9,7 +9,6 @@ import {
 import { 
   Calendar, Users, IndianRupee, Plus, CheckSquare, Activity, Shield, Eye, Edit, ExternalLink, BarChart3 
 } from 'lucide-react';
-import { SOCKET_URL } from '../config/env';
 
 export default function AdminOverview() {
   const [stats, setStats] = useState(null);
@@ -31,7 +30,7 @@ export default function AdminOverview() {
   useEffect(() => {
     fetchStats();
 
-    const socket = io(SOCKET_URL);
+    const socket = io(import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:5000');
     
     socket.on('checkInUpdated', () => {
       // Re-fetch stats when a check-in event happens globally

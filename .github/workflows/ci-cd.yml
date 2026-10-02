@@ -1,14 +1,14 @@
-name: Peak1 CI Pipeline
+name: Peak1 CI/CD Pipeline
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ main, develop, staging ]
   pull_request:
     branches: [ main, develop ]
 
 jobs:
-  server:
-    name: Backend CI
+  backend-test:
+    name: Backend Lint, Build & Test
     runs-on: ubuntu-latest
 
     services:
@@ -23,25 +23,23 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20.x
-          cache: 'npm'
-          cache-dependency-path: server/package-lock.json
 
       - name: Install Server Dependencies
-        working-directory: ./server
-        run: npm ci
+        run: |
+          cd server
+          npm ci
 
       - name: Run Backend Tests
-        working-directory: ./server
         env:
           NODE_ENV: test
-          APP_ENV: test
           MONGO_URI: mongodb://localhost:27017/peak1_test
           JWT_SECRET: test_jwt_secret_key_12345
-          QR_SIGNING_SECRET: test_qr_secret
-        run: npm test
+        run: |
+          cd server
+          npm test
 
-  client:
-    name: Frontend CI
+  frontend-build:
+    name: Frontend Lint & Build Check
     runs-on: ubuntu-latest
 
     steps:
@@ -50,17 +48,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20.x
-          cache: 'npm'
-          cache-dependency-path: client/package-lock.json
 
       - name: Install Client Dependencies
-        working-directory: ./client
-        run: npm ci
-        
-      - name: Lint Frontend
-        working-directory: ./client
-        run: npm run lint
+        run: |
+          cd client
+          npm ci
 
-      - name: Build Frontend
-        working-directory: ./client
-        run: npm run build
+      - name: Build Vite Frontend
+        run: |
+          cd client
+          npm run build

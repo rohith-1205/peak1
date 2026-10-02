@@ -12,10 +12,6 @@ server/node_modules/
 server/.env
 client/.env
 
-# Do NOT ignore example files
-!.env.example
-!**/.env.example
-
 # Build outputs
 client/dist/
 client/build/
