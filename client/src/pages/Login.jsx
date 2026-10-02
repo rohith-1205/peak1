@@ -65,8 +65,13 @@ export default function Login() {
           </div>
 
           <div className="form-group">
-            <label className="form-label">Password</label>
-            <div style={{ position: 'relative' }}>
+            <div className="flex items-center justify-between">
+              <label className="form-label" style={{ marginBottom: 0 }}>Password</label>
+              <Link to="/forgot-password" className="text-cyan-400 hover:underline" style={{ fontSize: '0.75rem' }}>
+                Forgot Password?
+              </Link>
+            </div>
+            <div style={{ position: 'relative', marginTop: '0.25rem' }}>
               <Lock size={14} className="text-dim" style={{ position: 'absolute', left: '0.75rem', top: '0.75rem' }} />
               <input
                 type="password"

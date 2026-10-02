@@ -75,6 +75,25 @@ const deleteStaff = async (req, res, next) => {
   }
 };
 
+const forgotPassword = async (req, res, next) => {
+  try {
+    const result = await authService.requestPasswordReset(req.body.email);
+    return ApiResponse.success(res, result, result.message, 200);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const resetPassword = async (req, res, next) => {
+  try {
+    const { token, password } = req.body;
+    const result = await authService.resetPassword(token, password);
+    return ApiResponse.success(res, result, result.message, 200);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   register,
   login,
@@ -84,5 +103,7 @@ module.exports = {
   getAdminMe,
   createStaff,
   getStaff,
-  deleteStaff
+  deleteStaff,
+  forgotPassword,
+  resetPassword
 };

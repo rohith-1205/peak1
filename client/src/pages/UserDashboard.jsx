@@ -183,35 +183,55 @@ export default function UserDashboard() {
       {/* QR Code Pass Modal */}
       {selectedPass && (
         <div className="modal-overlay">
-          <div className="modal-content text-center flex flex-col gap-md">
-            <div>
-              <span className="label-eyebrow">OFFICIAL CHECK-IN PASS</span>
-              <h3 className="section-title" style={{ marginTop: '0.25rem' }}>{selectedPass.eventId?.title}</h3>
-              <p className="text-muted" style={{ fontSize: '0.75rem' }}>{selectedPass.eventId?.venue}, {selectedPass.eventId?.city}</p>
+          <div className="modal-content text-center flex flex-col gap-md" style={{ maxWidth: '32rem' }}>
+            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded bg-cyan-500 text-slate-950 font-bold flex items-center justify-center text-xs">P1</div>
+                <span className="text-xs font-mono font-bold tracking-widest text-cyan-400">PEAK1 OFFICIAL ENTRY PASS</span>
+              </div>
+              <StatusBadge status={selectedPass.status} />
             </div>
 
-            <div style={{ backgroundColor: '#FFFFFF', padding: '1.5rem', borderRadius: '12px', width: 'fit-content', marginInline: 'auto' }}>
-              <QRCodeSVG value={selectedPass.signedQrPayload || selectedPass.registrationId} size={180} />
+            <div className="text-left py-1">
+              <h3 className="section-title text-xl text-white">{selectedPass.eventId?.title || 'Event Pass'}</h3>
+              <p className="text-muted text-xs flex items-center gap-3 mt-1">
+                <span>📍 {selectedPass.eventId?.venue}, {selectedPass.eventId?.city}</span>
+                <span>📅 {new Date(selectedPass.eventId?.eventDate).toLocaleDateString()}</span>
+              </p>
             </div>
 
-            <div className="card-mono text-left font-mono flex flex-col gap-xs" style={{ padding: '1rem', backgroundColor: 'var(--color-black)', fontSize: '0.75rem' }}>
+            <div style={{ backgroundColor: '#FFFFFF', padding: '1.25rem', borderRadius: '12px', width: 'fit-content', marginInline: 'auto' }}>
+              <QRCodeSVG value={selectedPass.signedQrPayload || selectedPass.registrationId} size={200} />
+            </div>
+
+            <div className="card-mono text-left font-mono flex flex-col gap-xs p-3" style={{ backgroundColor: 'var(--color-black)', fontSize: '0.75rem' }}>
               <div className="flex justify-between">
                 <span className="text-muted">PASS ID:</span>
                 <span className="font-bold text-white">{selectedPass.registrationId}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted">PARTICIPANT:</span>
-                <span className="text-white">{selectedPass.participantDetails?.fullName}</span>
+                <span className="text-white">{selectedPass.participantDetails?.fullName || user?.name}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted">STATUS:</span>
-                <span className="font-bold text-white">{selectedPass.status}</span>
+                <span className="text-muted">EMAIL:</span>
+                <span className="text-slate-300">{selectedPass.participantDetails?.email || user?.email}</span>
               </div>
+              {selectedPass.raceDetails?.vehicleModel && (
+                <div className="flex justify-between">
+                  <span className="text-muted">VEHICLE / CLASS:</span>
+                  <span className="text-cyan-400">{selectedPass.raceDetails.vehicleModel} ({selectedPass.raceDetails.vehicleNumber})</span>
+                </div>
+              )}
             </div>
 
-            <div className="flex gap-md pt-2">
-              <button onClick={() => window.print()} className="btn btn-secondary flex-1">
-                <Printer size={14} /> Print Pass
+            <p className="text-slate-400 text-[11px] leading-tight">
+              Present this pass & QR code at the entry gate. Verification requires valid photo ID matching the participant name.
+            </p>
+
+            <div className="flex gap-md pt-2 modal-action-buttons">
+              <button onClick={() => window.print()} className="btn btn-secondary flex-1 flex items-center justify-center gap-2">
+                <Printer size={15} /> Print / Save PDF
               </button>
               <button onClick={() => setSelectedPass(null)} className="btn btn-primary flex-1">
                 Close Pass

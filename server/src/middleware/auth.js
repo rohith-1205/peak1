@@ -46,13 +46,13 @@ const requireAdmin = (req, res, next) => {
     return ApiResponse.error(res, 'Authentication required.', 401, 'UNAUTHORIZED');
   }
 
-  if (req.user.role !== ROLES.ADMIN && req.user.role !== ROLES.SUPER_ADMIN) {
-    return ApiResponse.error(res, 'Access denied. Administrator privileges required.', 403, 'FORBIDDEN');
-  }
-
   // Enforce admin scope token
   if (!req.tokenPayload || req.tokenPayload.scope !== 'admin') {
     return ApiResponse.error(res, 'Access denied. Administrator session scope required.', 403, 'INVALID_ADMIN_SCOPE');
+  }
+
+  if (req.user.role !== ROLES.ADMIN && req.user.role !== ROLES.SUPER_ADMIN) {
+    return ApiResponse.error(res, 'Access denied. Administrator privileges required.', 403, 'FORBIDDEN');
   }
 
   next();
@@ -63,13 +63,13 @@ const requireGateStaff = (req, res, next) => {
     return ApiResponse.error(res, 'Authentication required.', 401, 'UNAUTHORIZED');
   }
 
-  if (req.user.role !== ROLES.ADMIN && req.user.role !== ROLES.SUPER_ADMIN && req.user.role !== ROLES.CHECKIN_STAFF) {
-    return ApiResponse.error(res, 'Access denied. Gate Staff privileges required.', 403, 'FORBIDDEN');
-  }
-
   // Enforce admin scope token
   if (!req.tokenPayload || req.tokenPayload.scope !== 'admin') {
     return ApiResponse.error(res, 'Access denied. Staff session scope required.', 403, 'INVALID_ADMIN_SCOPE');
+  }
+
+  if (req.user.role !== ROLES.ADMIN && req.user.role !== ROLES.SUPER_ADMIN && req.user.role !== ROLES.CHECKIN_STAFF) {
+    return ApiResponse.error(res, 'Access denied. Gate Staff privileges required.', 403, 'FORBIDDEN');
   }
 
   next();

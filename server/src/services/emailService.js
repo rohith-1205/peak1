@@ -81,6 +81,60 @@ const sendRegistrationEmail = async (registration, event) => {
   }
 };
 
+const sendPasswordResetEmail = async (user, resetUrl) => {
+  try {
+    const transporter = createTransporter();
+
+    const htmlContent = `
+      <div style="font-family: 'Arial', sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9; border-radius: 8px;">
+        <div style="background-color: #0f172a; padding: 20px; border-radius: 8px 8px 0 0; text-align: center;">
+          <h1 style="color: #06b6d4; margin: 0; font-size: 24px;">Peak1 Account Password Reset</h1>
+        </div>
+        
+        <div style="background-color: #ffffff; padding: 30px; border-radius: 0 0 8px 8px; border: 1px solid #eeeeee;">
+          <h2 style="color: #333333; margin-top: 0;">Hello ${user.name || 'User'},</h2>
+          <p style="color: #555555; line-height: 1.5;">
+            We received a request to reset your password for your <strong>Peak1</strong> account.
+          </p>
+          <p style="color: #555555; line-height: 1.5;">
+            Please click the button below to choose a new password. This link is valid for <strong>1 hour</strong>.
+          </p>
+
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${resetUrl}" style="background-color: #06b6d4; color: #0f172a; font-weight: bold; text-decoration: none; padding: 14px 28px; border-radius: 8px; display: inline-block; font-size: 16px;">
+              Reset Password Now
+            </a>
+          </div>
+
+          <p style="color: #777777; font-size: 13px; line-height: 1.4;">
+            If you did not request a password reset, you can safely ignore this email. Your password will remain unchanged.
+          </p>
+
+          <p style="color: #999999; font-size: 12px; margin-top: 25px; word-break: break-all;">
+            Link not working? Copy and paste this URL into your browser:<br/>
+            <a href="${resetUrl}" style="color: #06b6d4;">${resetUrl}</a>
+          </p>
+        </div>
+      </div>
+    `;
+
+    const subjectPrefix = env.APP_ENV === 'staging' ? '[STAGING] ' : '';
+
+    const mailOptions = {
+      from: '"Peak1 Platform" <noreply@peak1.app>',
+      to: user.email,
+      subject: `${subjectPrefix}Reset Your Password - Peak1`,
+      html: htmlContent,
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log(`Password reset email sent to ${user.email} [Message ID: ${info.messageId}]`);
+  } catch (error) {
+    console.error('Error sending password reset email:', error);
+  }
+};
+
 module.exports = {
-  sendRegistrationEmail
+  sendRegistrationEmail,
+  sendPasswordResetEmail
 };

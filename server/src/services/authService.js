@@ -164,6 +164,58 @@ const deleteStaffAccount = async (id) => {
   return { success: true };
 };
 
+const crypto = require('crypto');
+const { sendPasswordResetEmail } = require('./emailService');
+
+const requestPasswordReset = async (email) => {
+  const user = await User.findOne({ email: email.toLowerCase() });
+  if (!user) {
+    // Return friendly success to prevent account enumeration
+    return { message: 'If an account with that email exists, a password reset email has been sent.' };
+  }
+
+  // Generate random 32-byte hex token
+  const rawToken = crypto.randomBytes(32).toString('hex');
+  const hashedToken = crypto.createHash('sha256').update(rawToken).digest('hex');
+
+  // Set token & 1-hour expiration
+  user.resetPasswordToken = hashedToken;
+  user.resetPasswordExpires = Date.now() + 60 * 60 * 1000; // 1 hour
+  await user.save();
+
+  // Build Reset Link
+  const resetUrl = `${env.CLIENT_URL || 'http://localhost:5173'}/reset-password?token=${rawToken}`;
+
+  // Send Email (async in background)
+  sendPasswordResetEmail(user, resetUrl).catch(err => console.error('Reset email error:', err.message));
+
+  return { message: 'If an account with that email exists, a password reset email has been sent.' };
+};
+
+const resetPassword = async (rawToken, newPassword) => {
+  const hashedToken = crypto.createHash('sha256').update(rawToken).digest('hex');
+
+  const user = await User.findOne({
+    resetPasswordToken: hashedToken,
+    resetPasswordExpires: { $gt: Date.now() }
+  }).select('+resetPasswordToken +resetPasswordExpires');
+
+  if (!user) {
+    const error = new Error('Password reset token is invalid or has expired.');
+    error.statusCode = 400;
+    error.errorCode = 'INVALID_RESET_TOKEN';
+    throw error;
+  }
+
+  // Update password & clear reset token
+  user.password = newPassword;
+  user.resetPasswordToken = undefined;
+  user.resetPasswordExpires = undefined;
+  await user.save();
+
+  return { message: 'Password has been reset successfully. You can now log in with your new password.' };
+};
+
 module.exports = {
   generateToken,
   generateAdminToken,
@@ -173,5 +225,7 @@ module.exports = {
   sanitizeUser,
   createStaffAccount,
   getStaffAccounts,
-  deleteStaffAccount
+  deleteStaffAccount,
+  requestPasswordReset,
+  resetPassword
 };

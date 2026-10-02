@@ -2,8 +2,10 @@ const crypto = require('crypto');
 const QRCode = require('qrcode');
 const env = require('../config/env');
 
-// Use dev fallback only in development environment
-const QR_SECRET = env.NODE_ENV === 'development' ? (env.QR_SIGNING_SECRET || 'peak1_qr_secret_dev') : env.QR_SIGNING_SECRET;
+// Use dev/test fallback when QR_SIGNING_SECRET is not defined
+const QR_SECRET = (env.NODE_ENV === 'development' || env.NODE_ENV === 'test')
+  ? (env.QR_SIGNING_SECRET || 'peak1_qr_secret_dev_32_characters_long_key_string')
+  : env.QR_SIGNING_SECRET;
 
 /**
  * Generate HMAC signature for a registration & event combination.

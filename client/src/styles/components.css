@@ -283,3 +283,47 @@
   border-color: var(--text-white);
 }
 
+/* Print Media Styles for Official Ticket Passes */
+@media print {
+  body {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Hide navigation, footers, and dashboard background elements */
+  nav, footer, .navbar, .footer, .btn, header, .page-wrapper > div:not(.modal-overlay) {
+    display: none !important;
+  }
+
+  .modal-overlay {
+    position: static !important;
+    background: #ffffff !important;
+    backdrop-filter: none !important;
+    padding: 0 !important;
+    display: block !important;
+  }
+
+  .modal-content {
+    max-width: 100% !important;
+    width: 100% !important;
+    border: 2px solid #000000 !important;
+    box-shadow: none !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    padding: 2rem !important;
+    border-radius: 8px !important;
+  }
+
+  .modal-content *, .modal-content div, .modal-content span, .modal-content p, .modal-content h3 {
+    color: #000000 !important;
+    background-color: transparent !important;
+    border-color: #cccccc !important;
+  }
+
+  .modal-action-buttons {
+    display: none !important;
+  }
+}
+

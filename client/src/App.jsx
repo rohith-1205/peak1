@@ -15,6 +15,8 @@ import EventBrowse from './pages/EventBrowse';
 import EventDetail from './pages/EventDetail';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import UserDashboard from './pages/UserDashboard';
 import ProfilePage from './pages/ProfilePage';
 import AdminLoginPage from './pages/AdminLoginPage';
@@ -45,6 +47,8 @@ export default function App() {
             <Route path="/about" element={<PageTransition><About /></PageTransition>} />
             <Route path="/login" element={<PageTransition><Login /></PageTransition>} />
             <Route path="/register" element={<PageTransition><Register /></PageTransition>} />
+            <Route path="/forgot-password" element={<PageTransition><ForgotPassword /></PageTransition>} />
+            <Route path="/reset-password" element={<PageTransition><ResetPassword /></PageTransition>} />
             <Route path="/admin/login" element={<PageTransition><AdminLoginPage /></PageTransition>} />
 
             {/* Protected Participant Event Routes */}

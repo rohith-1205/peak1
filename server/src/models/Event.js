@@ -2,7 +2,8 @@ const mongoose = require('mongoose');
 const { EVENT_STATUS, EVENT_CATEGORIES } = require('../constants');
 
 const customFieldSchema = new mongoose.Schema({
-  id: { type: String, required: true },
+  id: { type: String },
+  fieldId: { type: String },
   label: { type: String, required: true },
   type: { 
     type: String, 
@@ -135,7 +136,8 @@ const eventSchema = new mongoose.Schema(
         categoryClass: { type: String, enum: ['HIDDEN', 'OPTIONAL', 'REQUIRED'], default: 'HIDDEN' }
       },
       minAge: { type: Number, default: 0 },
-      customFields: [customFieldSchema]
+      customFields: [customFieldSchema],
+      customQuestions: [customFieldSchema]
     },
 
     raceConfig: {

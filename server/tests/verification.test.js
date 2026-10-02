@@ -115,6 +115,8 @@ beforeAll(async () => {
     state: 'Tamil Nadu',
     organizer: { name: 'City', email: 'city@example.com' },
     eventDate: new Date('2026-11-01'),
+    startTime: '06:00',
+    endTime: '10:00',
     isPaid: false,
     capacity: 500,
     availableSlots: 500,

@@ -63,10 +63,11 @@ const initiateRegistration = async (eventId, userId, registrationData) => {
   const parseResult = schema.safeParse(registrationData);
   if (!parseResult.success) {
     const issues = parseResult.error.errors.map(e => `${e.path.join('.')}: ${e.message}`);
-    const isMissingProfile = parseResult.error.errors.some(e => e.path.includes('participantDetails') || e.path.includes('dob'));
+    const isAgeError = parseResult.error.errors.some(e => e.message.includes('years old') || e.message.includes('minAge'));
+    const isMissingProfile = !isAgeError && parseResult.error.errors.some(e => e.path.includes('participantDetails') && !e.path.includes('dob'));
     const error = new Error(issues.join('; '));
     error.statusCode = 400;
-    error.errorCode = isMissingProfile ? 'MISSING_PROFILE_FIELDS' : 'VALIDATION_ERROR';
+    error.errorCode = isAgeError ? 'VALIDATION_ERROR' : (isMissingProfile ? 'MISSING_PROFILE_FIELDS' : 'VALIDATION_ERROR');
     error.errors = issues;
     throw error;
   }
@@ -570,8 +571,12 @@ const checkInParticipant = async (registrationId, staffUserId) => {
 };
 
 const undoGateCheckIn = async (registrationId, reason, staffId) => {
+  const isObjectId = typeof registrationId === 'string' && registrationId.match(/^[0-9a-fA-F]{24}$/);
   const reg = await Registration.findOne({
-    $or: [{ registrationId }, { _id: registrationId }]
+    $or: [
+      { registrationId },
+      ...(isObjectId ? [{ _id: registrationId }] : [])
+    ]
   }).populate('eventId');
 
   if (!reg) {

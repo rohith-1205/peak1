@@ -124,7 +124,7 @@ const registrationSchema = z.object({
 const buildRegistrationSchema = (registrationConfig = {}) => {
   const requiredProfile = registrationConfig.requiredProfileFields || [];
   const raceConfig = registrationConfig.raceFieldsConfig || {};
-  const customQuestions = registrationConfig.customQuestions || [];
+  const customQuestions = registrationConfig.customQuestions || registrationConfig.customFields || [];
   const minAge = registrationConfig.minAge || 0;
 
   // 1. Participant Details Schema
@@ -189,7 +189,7 @@ const buildRegistrationSchema = (registrationConfig = {}) => {
   // 3. Custom Responses Schema
   const customShape = {};
   customQuestions.forEach((q) => {
-    const key = q.fieldId;
+    const key = q.fieldId || q.id;
     if (!key) return;
 
     if (q.required) {
@@ -240,10 +240,21 @@ const validate = (schema) => (req, res, next) => {
   }
 };
 
+const forgotPasswordSchema = z.object({
+  email: z.string().email('Invalid email address')
+});
+
+const resetPasswordSchema = z.object({
+  token: z.string().min(1, 'Reset token is required'),
+  password: z.string().min(6, 'Password must be at least 6 characters long')
+});
+
 module.exports = {
   registerSchema,
   loginSchema,
   adminLoginSchema,
+  forgotPasswordSchema,
+  resetPasswordSchema,
   updateProfileSchema,
   createEventSchema,
   registrationSchema,
