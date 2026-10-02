@@ -1,142 +1,203 @@
 # Peak1 — Event Registration & Race Management Platform
 
-**Peak1** is an enterprise-grade, high-performance Event Registration and Race Management SaaS platform built using the MERN stack (MongoDB, Express, React, Node.js) with Vite, Tailwind/Vanilla CSS, JWT authentication, and Razorpay modular payment provider abstraction.
+![Peak1 Banner](https://img.shields.io/badge/Platform-Peak1-orange?style=for-the-badge)
+![MERN Stack](https://img.shields.io/badge/Stack-MERN-blue?style=for-the-badge)
+![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
-Designed specifically for professional event organizers running:
-- **Motorsport & Drag Races** (Quarter mile drag, circuit criteriums, rally stages)
-- **Marathons & Trail Runs** (5K, 10K, 21K Half Marathon, 42K Ultra)
-- **Cycling Criteriums & Sports Challenges**
-- **College, Corporate & Community Competitions**
+**Peak1** is an enterprise-grade, high-performance Event Registration and Race Management SaaS platform built using the MERN stack (MongoDB, Express.js, React 18, Node.js) with Vite, Socket.IO real-time sync, dynamic form builders, JWT authentication, and Razorpay payment abstraction.
 
----
-
-## 1. Project Overview
-Peak1 operates as a **single-organization event platform** owned and managed by a single administrator (Admin). There is no multi-tenant or multi-organizer complexity.
-
-**Workflow**:
-- **ADMIN**: Creates, edits, publishes events, configures dynamic registration forms, sets pricing (Free/Paid), tracks payments, manages rosters, exports CSVs, and performs live gate QR check-ins.
-- **PUBLIC USERS / PARTICIPANTS**: Browse official events, view race specifications, register for passes, pay securely via Razorpay, and view QR passes on their dashboard.
+Designed specifically for professional event organizers managing:
+- 🏎️ **Motorsports & Drag Races** (Quarter-mile drag, circuit criteriums, rally stages)
+- 🏃 **Marathons & Trail Runs** (5K, 10K, 21K Half Marathon, 42K Ultra)
+- 🚴 **Cycling Criteriums & Sports Challenges**
+- 🏆 **College, Corporate & Community Competitions**
 
 ---
 
-## 2. Architecture Diagram
+## 📑 Table of Contents
+- [1. Architecture Overview](#1-architecture-overview)
+- [2. Key Features & Capabilities](#2-key-features--capabilities)
+- [3. Technology Stack](#3-technology-stack)
+- [4. Repository Folder Structure](#4-repository-folder-structure)
+- [5. Getting Started & Local Setup](#5-getting-started--local-setup)
+- [6. Environment Variables Reference](#6-environment-variables-reference)
+- [7. Database CLI & Management Commands](#7-database-cli--management-commands)
+- [8. Mobile QR Camera Scanning Setup](#8-mobile-qr-camera-scanning-setup)
+- [9. REST API Endpoint Reference](#9-rest-api-endpoint-reference)
+- [10. Automated Testing](#10-automated-testing)
+- [11. Production Security & Safety Guards](#11-production-security--safety-guards)
+- [12. Troubleshooting Guide](#12-troubleshooting-guide)
+
+---
+
+## 1. Architecture Overview
 
 ```
-                       +-----------------------------------+
-                       |    React 18 + Vite (Peak1 Web)    |
-                       |  Speed & Motion Design System     |
-                       +-----------------------------------+
-                                         |
-                                         | HTTPS / REST API
-                                         v
-                       +-----------------------------------+
-                       |    Express Node.js REST API       |
-                       | (Security Guards, Controllers,    |
-                       |   Services, Zod Validators)       |
-                       +-----------------------------------+
-                             /           |           \
-                            /            |            \
-                           v             v             v
-             +------------------+ +-------------+ +--------------------+
-             | MongoDB (Local / | |  Razorpay / | | Cloud Storage      |
-             | Atlas Staging/   | |  Payment    | | (Multer / Cloudinary|
-             | Production)      | |  Provider   | | / AWS S3)          |
-             +------------------+ +-------------+ +--------------------+
+                          +-----------------------------------+
+                          |    React 18 + Vite (Peak1 Web)    |
+                          |  Speed & Motion Design System     |
+                          +-----------------------------------+
+                                    |              ^
+                    HTTPS REST API  |              | Socket.IO Live Scan Sync
+                                    v              v
+                          +-----------------------------------+
+                          |     Express Node.js REST API      |
+                          | (Security Guards, Controllers,    |
+                          |   Services, Zod Validators)       |
+                          +-----------------------------------+
+                                /           |           \
+                               /            |            \
+                              v             v             v
+                +------------------+ +-------------+ +--------------------+
+                | MongoDB (Local / | |  Razorpay   | | Cloud Storage      |
+                | Atlas Staging /  | |  Payment    | | (Multer / Sharp /  |
+                | Production)      | | Engine      | | Cloudinary / S3)   |
+                +------------------+ +-------------+ +--------------------+
 ```
+
+---
+
+## 2. Key Features & Capabilities
+
+### 🌐 Participant Portal
+- **Event Discovery & Filtering**: Search and filter upcoming or past events by category, status, or keyword.
+- **Rich Event Specifications**: Detailed race information including category pricing tiers, schedules, venue maps, and entry requirements.
+- **Express Registration Workflow**: Multi-step registration supporting dynamic requirement fields, emergency contact capture, and document uploads.
+- **Integrated Payments**: Frictionless payment checkout with Razorpay modal, automatic retry handling, and digital invoice generation.
+- **User Dashboard & Pass Management**: Real-time view of active registrations, tickets, digital pass QR code previews, and downloadable entry passes.
+
+### 🛡️ Admin & Race Operations Suite
+- **Analytics Overview**: Dashboard powered by Recharts visualizing revenue, registration volume, category breakdowns, and real-time activity feeds.
+- **Dynamic Participant Requirements Builder**: Custom drag-and-drop form builder enabling admins to define per-event inputs (Text, Select dropdowns, Checkboxes, File Uploads).
+- **Event Management**: Create, edit, publish, draft, or cancel events with configurable category pricing and participant limits.
+- **Roster & Participant Management**: Search, filter, update registration status, view detailed profiles, and export CSV rosters.
+- **Staff Access Control**: Create and manage staff accounts (`STAFF` role) for gate operations.
+
+### 📱 Real-Time Live Gate Check-in System
+- **Mobile Camera QR Scanner**: Built-in camera scanner (`html5-qrcode`) for fast on-site ticket verification.
+- **Manual Ticket Verification**: Fallback entry panel for manual pass code entry.
+- **Socket.IO Sync**: Real-time scan updates broadcast across all logged-in gate scanners to prevent double entry.
+- **Signed Security QR Payloads**: Cryptographically hashed QR signatures (`QR_SIGNING_SECRET`) to prevent pass forgery.
 
 ---
 
 ## 3. Technology Stack
-- **Frontend**: React 18, Vite, React Router DOM, Lucide Icons, QRCode.react, Framer Motion
-- **Backend**: Node.js, Express.js, Mongoose, Zod Validation, JWT Authentication, Bcryptjs
-- **Database**: MongoDB (Local for Dev, Atlas for Staging/Production), MongoDB Compass GUI
-- **Payments**: Modular Payment Service Architecture (Default: Razorpay with Webhook Idempotency)
-- **Security**: Helmet, CORS, Express Rate Limiting, Startup Production Guards
+
+### Frontend Client
+| Technology | Description |
+|---|---|
+| **React 18** | UI component framework with hooks architecture |
+| **Vite 5** | High-performance frontend build tool & dev server |
+| **React Router DOM 6** | Declarative client-side routing |
+| **Lucide React** | Modern iconography set |
+| **Recharts** | Interactive charts for admin analytics |
+| **Framer Motion** | Dynamic micro-animations and smooth page transitions |
+| **html5-qrcode & qrcode.react** | QR scanner and renderer components |
+| **Socket.IO Client** | Real-time websocket connectivity for gate scanning |
+| **Axios** | HTTP client with automatic JWT token interceptors |
+
+### Backend Server
+| Technology | Description |
+|---|---|
+| **Node.js & Express.js** | RESTful backend runtime and web application framework |
+| **MongoDB & Mongoose** | Document database with schema enforcement |
+| **Zod** | Strict schema validation for incoming API payloads |
+| **JWT & Bcryptjs** | Stateless authentication tokens & secure password hashing |
+| **Socket.IO** | Websocket engine for live event & scan updates |
+| **Razorpay SDK** | Payment provider integration with webhook signature verification |
+| **Multer & Sharp** | File uploading and automated image compression pipeline |
+| **Cloudinary SDK** | Optional cloud image hosting provider integration |
+| **Helmet & Express Rate Limit** | Hardened HTTP security headers and API rate limiting |
 
 ---
 
-## 4. Folder Structure
+## 4. Repository Folder Structure
 
 ```
 peak1/
 ├── server/
 │   ├── src/
-│   │   ├── config/             # DB, Environment, Security config
-│   │   ├── constants/          # Event statuses, roles, categories
-│   │   ├── controllers/        # Auth, Event, Registration, Payment, Admin controllers
-│   │   ├── middleware/         # Auth, Admin guard, Error handler, Rate limiters
-│   │   ├── models/             # Mongoose Schemas (User, Event, Registration, Payment, AuditLog)
-│   │   ├── routes/             # Express REST endpoint routes
-│   │   ├── services/           # Business & payment logic engines
-│   │   ├── utils/              # Seed script, ApiResponse helpers
+│   │   ├── config/             # DB, Environment, Security & Storage configuration
+│   │   ├── constants/          # Application constants (roles, event/registration statuses)
+│   │   ├── controllers/        # REST API Controllers (Auth, Event, Registration, Payment, Admin)
+│   │   ├── middleware/         # Auth, Admin guard, Security, Upload & Error handling
+│   │   ├── migrations/         # Schema migration runner and script versions
+│   │   ├── models/             # Mongoose Models (User, Event, Registration, Payment, AuditLog)
+│   │   ├── routes/             # Express REST router definitions
+│   │   ├── services/           # Payment processing, mailer, & business logic engines
+│   │   ├── socket.js           # Socket.IO event handler for live gate check-in
+│   │   ├── utils/              # Seed scripts, index syncing, & response helpers
 │   │   ├── validators/         # Zod schemas for input validation
-│   │   ├── app.js              # Express app configuration
-│   │   └── server.js           # Database connection & server entrypoint
-│   ├── tests/                  # Jest & Supertest integration suite
+│   │   ├── app.js              # Express middleware pipeline assembly
+│   │   └── server.js           # App bootstrapper & DB connection entrypoint
+│   ├── tests/                  # Integration test suite (Jest & Supertest)
 │   ├── .env.example
 │   └── package.json
 │
 ├── client/
 │   ├── src/
-│   │   ├── components/         # Navbar, Footer, EventCard, StatusBadge, ProtectedRoutes
-│   │   ├── context/            # AuthContext, ToastContext
-│   │   ├── pages/              # Home, EventBrowse, EventDetail, Login, Register, Dashboards
-│   │   ├── services/           # Axios API client with JWT interceptor
-│   │   ├── styles/ / index.css # Speed & Motion Design System Tokens & Animations
-│   │   ├── App.jsx
-│   │   └── main.jsx
+│   │   ├── components/         # Navigation, Layouts, Cards, Badges, Requirements Builder
+│   │   │   └── gate/           # Gate scanner, camera panel, & scan history components
+│   │   ├── context/            # AuthContext & Toast notification state
+│   │   ├── pages/              # Participant & Admin application pages
+│   │   ├── services/           # Axios API client & REST endpoints wrapper
+│   │   ├── styles/             # Modular CSS stylesheets & animations
+│   │   ├── App.jsx             # React router application root
+│   │   └── main.jsx            # DOM entrypoint
 │   ├── index.html
 │   ├── vite.config.js
 │   └── package.json
 │
 ├── .github/
 │   └── workflows/
-│       └── ci-cd.yml           # GitHub Actions Automated CI/CD
+│       └── ci-cd.yml           # GitHub Actions Automated CI pipeline
 └── README.md
 ```
 
 ---
 
-## 5. Local Setup Instructions
+## 5. Getting Started & Local Setup
 
 ### Prerequisites
-- Node.js (v18+ or v20+)
-- MongoDB Community Server (v6.0+) running locally on port `27017`
-- npm or yarn package manager
+- **Node.js**: `v20.x` or higher
+- **MongoDB**: Community Server `v6.0+` running locally on `localhost:27017` or a MongoDB Atlas URI
+- **npm**: `v9.x` or higher
 
-### Step-by-Step Installation
+### Installation Steps
+
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/your-org/peak1.git
+   git clone https://github.com/rohith-1205/peak1.git
    cd peak1
    ```
 
-2. **Install Server Dependencies**:
+2. **Setup and Install Server**:
    ```bash
    cd server
    npm install
+   cp .env.example .env
    ```
 
-3. **Install Client Dependencies**:
+3. **Setup and Install Client**:
    ```bash
    cd ../client
    npm install
    ```
 
-4. **Seed the Local Development Database**:
+4. **Seed Development Database**:
    ```bash
    cd ../server
    npm run seed
    ```
-   *Output will display default Admin credentials (`admin@peak1.app` / `Admin@123456`).*
+   > ℹ️ *This creates sample events, users, and a default Admin account (`admin@peak1.app` / `Admin@123456`).*
 
 5. **Start Development Servers**:
-   - Backend API (`http://localhost:5000`):
+   - **Backend API Server** (runs at `http://localhost:5000`):
      ```bash
      cd server
      npm run dev
      ```
-   - Frontend Vite Client (`http://localhost:5173`):
+   - **Frontend Vite Client** (runs at `http://localhost:5173`):
      ```bash
      cd client
      npm run dev
@@ -144,158 +205,131 @@ peak1/
 
 ---
 
-## 6. MongoDB Installation
-- Download MongoDB Community Server from [MongoDB Download Center](https://www.mongodb.com/try/download/community).
-- Ensure the MongoDB Windows Service or `mongod` daemon is active on `localhost:27017`.
+## 6. Environment Variables Reference
 
----
-
-## 7. MongoDB Compass Setup
-- Open MongoDB Compass GUI.
-- Connect to string: `mongodb://localhost:27017/peak1_dev`.
-- Inspect collections: `users`, `events`, `registrations`, `payments`, `auditlogs`.
-
----
-
-## 8. MongoDB Atlas Setup (Staging & Production)
-1. Create a MongoDB Atlas cluster.
-2. Create separate database instances:
-   - Staging: `peak1_staging`
-   - Production: `peak1_prod`
-3. Configure Network Access IP Whitelist for deployment hosts.
-
----
-
-## 9. Environment Variables (`.env.example`)
+Create a `.env` file in the `server/` directory:
 
 ```env
+# Server Runtime Mode & Port
 NODE_ENV=development
 PORT=5000
+
+# Database Connection
 MONGO_URI=mongodb://localhost:27017/peak1_dev
 
+# Authentication & Security Secrets
 JWT_SECRET=super_secret_jwt_key_change_in_production_peak1_2026
 JWT_EXPIRES_IN=7d
 ADMIN_JWT_EXPIRES_IN=8h
 ALLOW_ADMIN_PUBLIC_LOGIN=false
 
+# Default Admin Credentials (for seed script)
 ADMIN_EMAIL=admin@peak1.app
 ADMIN_PASSWORD=Admin@123456
 
+# Cryptographic QR Pass Signing Secret (Minimum 32 characters)
 QR_SIGNING_SECRET=peak1_qr_secret_dev_32_characters_long_key_string
 
+# Client URL (for CORS policy)
 CLIENT_URL=http://localhost:5173
 
+# Payment Gateway Configuration (Razorpay)
 PAYMENT_PROVIDER=RAZORPAY
 RAZORPAY_KEY_ID=rzp_test_PEAK1DEVKEY123
 RAZORPAY_KEY_SECRET=rzp_test_PEAK1DEVSECRET456
 RAZORPAY_WEBHOOK_SECRET=rzp_webhook_secret_dev
 
+# Storage Configuration (local | cloudinary | s3)
 STORAGE_PROVIDER=local
 UPLOAD_PATH=public/uploads
 
+# Cloudinary Storage Configuration (Optional)
 CLOUDINARY_CLOUD_NAME=your_cloud_name
 CLOUDINARY_API_KEY=your_api_key
 CLOUDINARY_API_SECRET=your_api_secret
+
+# SMTP Email Configuration (Optional)
+EMAIL_HOST=smtp.mailtrap.io
+EMAIL_PORT=2525
+EMAIL_USER=your_smtp_user
+EMAIL_PASS=your_smtp_pass
+EMAIL_FROM=noreply@peak1.app
 ```
 
 ---
 
-## 16. Database Migrations & Admin Provisioning
+## 7. Database CLI & Management Commands
 
-### Database Migrations
-Database migration scripts support **dry-run mode** by default to inspect structural changes without mutating records:
+All database management scripts are executed from the `server/` folder:
 
-- **Dry-Run Inspection**:
-  ```bash
-  cd server
-  npm run migrate
-  ```
-- **Apply Migration Changes**:
-  ```bash
-  cd server
-  node src/migrations/runner.js --apply
-  ```
-
-### Provisioning Admin User
-Provision or update administrator credentials securely from environment variables (`ADMIN_EMAIL` & `ADMIN_PASSWORD`):
-
-```bash
-cd server
-npm run seed:admin
-```
-*Note: In production (`NODE_ENV=production`), `ADMIN_PASSWORD` must be at least 12 characters long and cannot be default `Admin@123456`.*
+| Command | Purpose |
+|---|---|
+| `npm run seed` | Seeds full mock data (events, participants, registrations, admin) for development. |
+| `npm run seed:admin` | Provisions or updates the default Admin account from environment variables. |
+| `npm run db:indexes` | Synchronizes and builds defined MongoDB collection indexes. |
+| `npm run migrate` | Runs schema migrations in **dry-run mode** (previews changes without applying). |
+| `node src/migrations/runner.js --apply` | Applies pending database schema migrations to the target database. |
 
 ---
 
-## 16b. Mobile Phone Camera Scanning & HTTPS/ngrok Setup
+## 8. Mobile QR Camera Scanning Setup
+
 > [!IMPORTANT]
-> Modern web browsers enforce strict security rules for camera access (`navigator.mediaDevices.getUserMedia`). Camera feeds **only operate under secure HTTPS contexts** or `localhost`.
->
-> When testing real-time QR camera scanning on physical mobile phones on your local Wi-Fi network:
-> 1. Use an HTTPS tunneling tool like **ngrok**:
->    ```bash
->    ngrok http 5173
->    ```
-> 2. Open the generated HTTPS URL (`https://xxxx.ngrok-free.app/admin/gate`) on your mobile browser.
-> 3. Grant camera permissions when prompted.
+> Modern web browsers enforce strict security policies restricting camera access (`navigator.mediaDevices.getUserMedia`) to **HTTPS contexts** or `localhost`.
 
+To test physical mobile phone QR scanning on your local network:
 
----
-
-## 17. Backup Strategy
-- Enable MongoDB Atlas Continuous Cloud Backups (Point-in-Time Recovery).
-- Retain daily automated snapshots for 30 days.
+1. **Start an HTTPS tunnel** (using [ngrok](https://ngrok.com/)):
+   ```bash
+   ngrok http 5173
+   ```
+2. **Access the Gate Page**: Open the generated `https://xxxx.ngrok-free.app/admin/gate` link on your mobile browser.
+3. **Grant Camera Access**: Allow camera permissions when prompted to initiate real-time ticket scanning.
 
 ---
 
-## 18. Restore Procedure
-1. Freeze active backend deployment or set API into maintenance mode.
-2. Select target backup snapshot timestamp in MongoDB Atlas Console.
-3. Trigger cluster restore to staging environment first to verify data integrity.
-4. Update API database connection string to point to restored instance.
+## 9. REST API Endpoint Reference
+
+### Auth Endpoints (`/api/v1/auth`)
+- `POST /register`: Register a new user account.
+- `POST /login`: Authenticate participant user and receive JWT.
+- `POST /admin/login`: Authenticate admin/staff user.
+- `GET /me`: Retrieve logged-in user profile.
+
+### Event Endpoints (`/api/v1/events`)
+- `GET /`: List all active published events (supports category & search filters).
+- `GET /:slugOrId`: Retrieve detailed event information.
+- `POST /`: *(Admin)* Create a new event.
+- `PUT /:id`: *(Admin)* Update event details or participant requirements.
+- `DELETE /:id`: *(Admin)* Soft delete or cancel an event.
+
+### Registration Endpoints (`/api/v1/registrations`)
+- `POST /`: Submit event registration & generate payment order.
+- `GET /my`: Retrieve registrations for the authenticated user.
+- `GET /:id`: Retrieve specific registration pass and QR details.
+- `POST /verify-gate`: *(Admin/Staff)* Verify ticket code or QR payload for check-in.
+
+### Payment Endpoints (`/api/v1/payments`)
+- `POST /create-order`: Initialize Razorpay payment order.
+- `POST /verify`: Verify Razorpay HMAC signature after payment completion.
+- `POST /webhook`: Webhook endpoint for idempotent server-to-server payment updates.
+
+### Admin Operations (`/api/v1/admin`)
+- `GET /overview`: Fetch system analytics metrics and chart data.
+- `GET /registrations`: List all registrations with status filters.
+- `PATCH /registrations/:id/status`: Update registration status manually.
+- `GET /registrations/export`: Export filtered event rosters as CSV.
+- `GET /staff` & `POST /staff`: Manage staff credentials.
+
+### File Upload (`/api/v1/upload`)
+- `POST /image`: Upload and optimize image asset (posters, banners, ID documents).
 
 ---
 
-## 19. Payment Configuration (Razorpay)
-1. Obtain API Key ID & Secret from Razorpay Dashboard.
-2. Set webhook target URL: `https://api.peak1.app/api/v1/payments/webhook`.
-3. Enable webhook event: `payment.captured`.
-4. Webhook handler automatically enforces HMAC-SHA256 signature verification and idempotency.
+## 10. Automated Testing
 
----
+The backend includes an integration test suite using **Jest**, **Supertest**, and **MongoDB Memory Server**:
 
-## 20. Image & File Storage Configuration
-- Local storage saves posters to `server/public/uploads`.
-- For cloud storage, update `STORAGE_PROVIDER=S3` or `CLOUDINARY` in `env.js`.
-
----
-
-## 21. Email Notification Service Configuration
-- Configured via SMTP credentials (`EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_USER`, `EMAIL_PASS`).
-- Compatible with AWS SES, SendGrid, or Mailtrap.
-
----
-
-## 22. Security Practices
-- Passwords hashed with bcryptjs (salt rounds = 10).
-- Stateless JWT auth tokens.
-- CORS restricted to explicit `CLIENT_URL`.
-- Express Rate Limiting (300 requests per 15 min window).
-- Zod strict input validation schemas for all mutating API routes.
-
----
-
-## 23. Production Safety Rules
-
-> [!CAUTION]
-> 1. The server boot process enforces environment verification (`src/config/env.js`). If `NODE_ENV === 'production'` and `MONGO_URI` contains `localhost`, server halts immediately.
-> 2. Seed and reset scripts explicitly reject execution when `NODE_ENV === 'production'`.
-> 3. Server always dictates payment price based on database records; amounts sent from frontend are never trusted.
-
----
-
-## 24. Automated Testing
-Run backend unit and integration test suite:
 ```bash
 cd server
 npm test
@@ -303,15 +337,28 @@ npm test
 
 ---
 
-## 25. Troubleshooting Guide
+## 11. Production Security & Safety Guards
 
-| Issue | Root Cause | Solution |
-|---|---|---|
-| `MongoServerError: connect ECONNREFUSED` | Local MongoDB service is stopped | Start MongoDB service (`net start MongoDB` or launch Compass) |
-| `FATAL PRODUCTION SAFETY ERROR` | `NODE_ENV=production` set with localhost URI | Update `.env` to point to MongoDB Atlas cluster URI |
-| `Razorpay Signature Verification Failed` | Mismatched secret key | Verify `RAZORPAY_KEY_SECRET` matches Razorpay dashboard |
-| `CORS Error in Browser` | `CLIENT_URL` mismatch | Set `CLIENT_URL=http://localhost:5173` in `server/.env` |
+> [!CAUTION]
+> 1. **Environment Protection**: The backend automatically checks database connections on boot. If `NODE_ENV === 'production'` and `MONGO_URI` points to a `localhost` instance, the server halts immediately.
+> 2. **Seed Guard**: Database seeding scripts (`seed` and `seed:admin`) are blocked from execution in production environments.
+> 3. **Server-Side Price Validation**: Payment amounts are strictly computed from backend database records. Client-provided prices are ignored to prevent request tampering.
+> 4. **Strict Security Headers**: Helmet enforces HTTP security headers and CORS is locked down to your configured `CLIENT_URL`.
 
 ---
 
-*Peak1 Platform — Built with Speed, Movement, and Data Integrity.*
+## 12. Troubleshooting Guide
+
+| Issue | Root Cause | Solution |
+|---|---|---|
+| `MongoServerError: connect ECONNREFUSED` | Local MongoDB server is not running | Start your local MongoDB service (`net start MongoDB` or run `mongod`). |
+| `FATAL PRODUCTION SAFETY ERROR` | `NODE_ENV=production` paired with `localhost` URI | Update `.env` with your production MongoDB Atlas URI. |
+| `Razorpay Signature Verification Failed` | Secret key mismatch | Ensure `RAZORPAY_KEY_SECRET` in `.env` matches your Razorpay Dashboard. |
+| `CORS Policy Block` | Origin mismatch | Update `CLIENT_URL` in `server/.env` to match your frontend origin. |
+| `Camera Not Available` | Insecure HTTP context | Access the Gate Scanner over `https://` or test on `localhost`. |
+
+---
+
+<p align="center">
+  <b>Peak1 Platform</b> — Engineered for Speed, Reliability, and Seamless Event Management.
+</p>
