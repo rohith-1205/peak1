@@ -1,0 +1,236 @@
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import api from '../services/api';
+import { useAuth } from '../context/AuthContext';
+import EventCard from '../components/EventCard';
+import { Calendar, ShieldCheck, Ticket, CheckCircle2, ArrowRight, Layers, Lock } from 'lucide-react';
+import './Home.css';
+
+export default function Home() {
+  const { user } = useAuth();
+  const [featuredEvents, setFeaturedEvents] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Only fetch event details & roster if user is logged in
+    if (!user) {
+      setLoading(false);
+      return;
+    }
+
+    const fetchData = async () => {
+      try {
+        const [eventsRes, categoriesRes] = await Promise.all([
+          api.get('/events?limit=6&upcoming=true'),
+          api.get('/events/meta/categories')
+        ]);
+
+        if (eventsRes.success && eventsRes.data?.events) {
+          setFeaturedEvents(eventsRes.data.events);
+        }
+
+        if (categoriesRes.success && categoriesRes.data?.categories) {
+          setCategories(categoriesRes.data.categories);
+        }
+      } catch (err) {
+        console.error('Error loading homepage data:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [user]);
+
+  return (
+    <div className="page-wrapper">
+      {/* Brand Hero Section */}
+      <section className="hero-section">
+        <div className="container hero-inner">
+          <div className="hero-badge">
+            OFFICIAL PLATFORM ENGINE
+          </div>
+
+          <h1 className="hero-title">
+            WHERE EVENTS <br />
+            <span className="text-muted">BECOME EXPERIENCES.</span>
+          </h1>
+
+          <p className="hero-desc">
+            The official event management and registration engine. Engineered for precision execution, verified participant entry, and seamless attendance tracking.
+          </p>
+
+          <div className="hero-actions">
+            {user ? (
+              <Link to="/events" className="btn btn-primary btn-lg">
+                Explore Available Events <ArrowRight size={16} />
+              </Link>
+            ) : (
+              <Link to="/login" className="btn btn-primary btn-lg">
+                Sign In to Access Schedule <ArrowRight size={16} />
+              </Link>
+            )}
+            <Link to="/about" className="btn btn-secondary btn-lg">
+              Platform Architecture
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* CONDITIONAL RENDER: Events & Categories ONLY Visible After Login */}
+      {user ? (
+        <>
+          {/* Dynamic Categories Section */}
+          {!loading && categories.length > 0 && (
+            <section className="container">
+              <div className="section-header">
+                <div>
+                  <span className="label-eyebrow">DISCIPLINES</span>
+                  <h2 className="section-title">Active Categories</h2>
+                </div>
+                <Link to="/events" className="nav-link flex items-center gap-xs">
+                  View All Disciplines <ArrowRight size={14} />
+                </Link>
+              </div>
+
+              <div className="grid grid-6 gap-md" style={{ marginTop: '1.5rem' }}>
+                {categories.map((cat, idx) => (
+                  <Link
+                    key={idx}
+                    to={`/events?category=${encodeURIComponent(cat)}`}
+                    className="card-mono category-card"
+                  >
+                    <Layers size={20} className="text-muted" />
+                    <span className="category-title truncate">{cat}</span>
+                  </Link>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Dynamic Events Roster Section */}
+          <section className="container">
+            <div className="section-header">
+              <div>
+                <span className="label-eyebrow">SCHEDULE</span>
+                <h2 className="section-title">Official Roster</h2>
+              </div>
+              {featuredEvents.length > 0 && (
+                <Link to="/events" className="btn btn-secondary btn-sm">
+                  Browse All Events
+                </Link>
+              )}
+            </div>
+
+            <div style={{ marginTop: '1.5rem' }}>
+              {loading ? (
+                <div className="grid grid-3">
+                  {[1, 2, 3].map((n) => (
+                    <div key={n} className="card-mono" style={{ height: '20rem', opacity: 0.5 }} />
+                  ))}
+                </div>
+              ) : featuredEvents.length > 0 ? (
+                <div className="grid grid-3 gap-lg">
+                  {featuredEvents.map((event) => (
+                    <EventCard key={event._id} event={event} />
+                  ))}
+                </div>
+              ) : (
+                /* Full-Width Elegant Centered Empty State */
+                <div className="empty-state">
+                  <div className="empty-state-icon">
+                    <Calendar size={24} />
+                  </div>
+                  <h3 className="empty-state-title">No Events Announced Yet</h3>
+                  <p className="empty-state-desc">
+                    Check back soon for upcoming schedule announcements, ticket releases, and entry registrations.
+                  </p>
+                </div>
+              )}
+            </div>
+          </section>
+        </>
+      ) : (
+        /* GUEST USER PROMPT: Event Details Restricted Banner */
+        <section className="container">
+          <div className="card-mono text-center flex flex-col items-center gap-md" style={{ padding: '3.5rem 1.5rem' }}>
+            <div className="empty-state-icon" style={{ width: '3.5rem', height: '3.5rem' }}>
+              <Lock size={28} />
+            </div>
+            <h3 className="section-title" style={{ fontSize: '1.5rem' }}>
+              AUTHENTICATION REQUIRED TO VIEW EVENT SCHEDULE
+            </h3>
+            <p className="text-muted" style={{ maxWidth: '32rem', fontSize: '0.875rem', lineHeight: 1.6 }}>
+              Event schedule details, dates, venues, and registration forms are accessible exclusively to authenticated participants. Please sign in or create an account.
+            </p>
+            <div className="flex gap-md" style={{ marginTop: '0.5rem' }}>
+              <Link to="/login" className="btn btn-primary">
+                Account Sign In
+              </Link>
+              <Link to="/register" className="btn btn-secondary">
+                Register Participant Account
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Brand Pillars / Features Section */}
+      <section className="container">
+        <div className="section-header">
+          <div>
+            <span className="label-eyebrow">INFRASTRUCTURE</span>
+            <h2 className="section-title">Engineered Capabilities</h2>
+          </div>
+        </div>
+
+        <div className="grid grid-3 gap-lg" style={{ marginTop: '1.5rem' }}>
+          <div className="card-mono feature-card">
+            <div className="flex flex-col gap-md">
+              <div className="feature-icon-box">
+                <ShieldCheck size={20} />
+              </div>
+              <span className="label-eyebrow" style={{ fontSize: '0.65rem' }}>SYSTEM INTEGRITY</span>
+              <h3 className="font-heading font-bold uppercase text-white" style={{ fontSize: '1.125rem' }}>
+                Precision Execution
+              </h3>
+              <p className="text-muted leading-relaxed" style={{ fontSize: '0.8125rem' }}>
+                Atomic duplicate entry protection, server-dictated price validation, and database safety guards guarantee registration integrity.
+              </p>
+            </div>
+          </div>
+
+          <div className="card-mono feature-card">
+            <div className="flex flex-col gap-md">
+              <div className="feature-icon-box">
+                <Ticket size={20} />
+              </div>
+              <span className="label-eyebrow" style={{ fontSize: '0.65rem' }}>REGISTRATION ENGINE</span>
+              <h3 className="font-heading font-bold uppercase text-white" style={{ fontSize: '1.125rem' }}>
+                Verified Entries
+              </h3>
+              <p className="text-muted leading-relaxed" style={{ fontSize: '0.8125rem' }}>
+                Customizable registration field requirements, automated ticket creation, and Razorpay checkout for paid event registrations.
+              </p>
+            </div>
+          </div>
+
+          <div className="card-mono feature-card">
+            <div className="flex flex-col gap-md">
+              <div className="feature-icon-box">
+                <CheckCircle2 size={20} />
+              </div>
+              <span className="label-eyebrow" style={{ fontSize: '0.65rem' }}>GATE SECURITY</span>
+              <h3 className="font-heading font-bold uppercase text-white" style={{ fontSize: '1.125rem' }}>
+                QR Gate Scanning
+              </h3>
+              <p className="text-muted leading-relaxed" style={{ fontSize: '0.8125rem' }}>
+                Automated QR ticket generation upon registration with staff gate camera scanning and real-time attendance status updates.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}

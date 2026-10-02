@@ -1,0 +1,66 @@
+name: Peak1 CI Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  server:
+    name: Backend CI
+    runs-on: ubuntu-latest
+
+    services:
+      mongodb:
+        image: mongo:6.0
+        ports:
+          - 27017:27017
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: 'npm'
+          cache-dependency-path: server/package-lock.json
+
+      - name: Install Server Dependencies
+        working-directory: ./server
+        run: npm ci
+
+      - name: Run Backend Tests
+        working-directory: ./server
+        env:
+          NODE_ENV: test
+          APP_ENV: test
+          MONGO_URI: mongodb://localhost:27017/peak1_test
+          JWT_SECRET: test_jwt_secret_key_12345
+          QR_SIGNING_SECRET: test_qr_secret
+        run: npm test
+
+  client:
+    name: Frontend CI
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: 'npm'
+          cache-dependency-path: client/package-lock.json
+
+      - name: Install Client Dependencies
+        working-directory: ./client
+        run: npm ci
+        
+      - name: Lint Frontend
+        working-directory: ./client
+        run: npm run lint
+
+      - name: Build Frontend
+        working-directory: ./client
+        run: npm run build

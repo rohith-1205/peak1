@@ -1,0 +1,120 @@
+/* ADMIN CONSOLE STYLES */
+.admin-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 80vh;
+  gap: 2rem;
+}
+
+@media (min-width: 1024px) {
+  .admin-layout {
+    flex-direction: row;
+  }
+}
+
+.admin-sidebar {
+  width: 100%;
+  background-color: var(--color-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  overflow-x: auto;
+}
+
+@media (min-width: 1024px) {
+  .admin-sidebar {
+    width: 16rem;
+    flex-shrink: 0;
+    flex-direction: column;
+    overflow-x: visible;
+  }
+}
+
+.admin-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.625rem 1rem;
+  border-radius: var(--radius-md);
+  font-family: var(--font-heading);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.admin-nav-item:hover, .admin-nav-item.active {
+  background-color: var(--color-card-hover);
+  color: var(--text-white);
+}
+
+.admin-nav-item.active {
+  border: 1px solid var(--border-subtle);
+}
+
+.admin-content {
+  flex: 1 1 0%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.stat-card {
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.stat-number {
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 1.75rem;
+  color: var(--text-white);
+  line-height: 1;
+  margin-top: 0.375rem;
+}
+
+/* Gate QR Scanner Responsive Fixes */
+#qr-reader-viewport video {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+}
+
+
+/* Gate CSS Classes */
+.gate-selector-card { padding: 1.5rem; }
+.gate-selector-header { display: flex; flex-direction: column; gap: 1rem; justify-content: space-between; }
+@media (min-width: 768px) { .gate-selector-header { flex-direction: row; align-items: flex-end; } }
+.gate-selector-input-group { flex: 1; }
+.gate-label { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; }
+.gate-icon-cyan { color: var(--accent-cyan); }
+.spin { animation: spin 1s linear infinite; }
+@keyframes spin { 100% { transform: rotate(360deg); } }
+.gate-metrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; border-top: 1px solid var(--border-subtle); padding-top: 1.5rem; }
+@media (min-width: 768px) { .gate-metrics-grid { grid-template-columns: repeat(4, 1fr); } }
+.gate-metric-card { background-color: var(--color-bg-alt); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 1rem; display: flex; align-items: center; gap: 0.75rem; }
+.gate-metric-card.progress-card { flex-direction: column; align-items: stretch; justify-content: center; }
+.gate-metric-icon { padding: 0.5rem; border-radius: var(--radius-md); }
+.gate-metric-icon.bg-blue { background-color: rgba(59, 130, 246, 0.1); color: #60a5fa; }
+.gate-metric-icon.bg-emerald { background-color: rgba(16, 185, 129, 0.1); color: #34d399; }
+.gate-metric-icon.bg-amber { background-color: rgba(245, 158, 11, 0.1); color: #fbbf24; }
+.gate-metric-label { font-size: 0.75rem; font-weight: 500; color: var(--text-muted); margin-bottom: 0.25rem; }
+.gate-metric-value { font-size: 1.25rem; font-weight: 700; color: var(--text-white); }
+.text-emerald { color: #34d399; }
+.text-amber { color: #fcd34d; }
+.gate-progress-header { display: flex; justify-content: space-between; font-size: 0.75rem; margin-bottom: 0.5rem; }
+.gate-progress-pct { font-weight: 700; color: var(--accent-cyan); }
+.gate-progress-track { width: 100%; background-color: rgba(51, 65, 85, 0.6); border-radius: 9999px; height: 0.5rem; overflow: hidden; }
+.gate-progress-fill { background: linear-gradient(to right, #06b6d4, #34d399); height: 100%; border-radius: 9999px; transition: width 0.5s; }
+
+.admin-gate-page { gap: 1.5rem; }
+.admin-gate-layout { display: grid; gap: 1.5rem; grid-template-columns: 1fr; }
+@media (min-width: 1024px) { .admin-gate-layout { grid-template-columns: 5fr 7fr; } }
