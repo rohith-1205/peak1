@@ -1,9 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ShieldCheck } from 'lucide-react';
+import { ShieldCheck, Instagram } from 'lucide-react';
 import './Footer.css';
 
 export default function Footer() {
+  const instagramUrl = "https://www.instagram.com/peak1club?utm_source=ig_web_button_share_sheet&stkn=ZDNlZDc0MzIxNw==";
+
   return (
     <footer className="site-footer">
       <div className="container footer-inner">
@@ -47,25 +49,50 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Support */}
+          {/* Support & Community */}
           <div className="footer-col">
-            <h4 className="footer-title">Support & Console</h4>
+            <h4 className="footer-title">Community & Support</h4>
             <p className="text-muted leading-relaxed" style={{ fontSize: '0.75rem' }}>
-              Official queries regarding registrations or platform administration?
+              Connect with our official community channel or contact administration:
             </p>
-            <a
-              href="mailto:support@peak1.app"
-              className="btn btn-secondary btn-sm"
-              style={{ width: 'fit-content', marginTop: '0.5rem' }}
-            >
-              Contact Platform Admin
-            </a>
+            <div className="flex flex-col gap-xs" style={{ marginTop: '0.5rem' }}>
+              <a
+                href={instagramUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-secondary btn-sm flex items-center gap-xs"
+                style={{ 
+                  width: 'fit-content',
+                  borderColor: 'rgba(225, 48, 108, 0.4)',
+                  color: '#E1306C',
+                  backgroundColor: 'rgba(225, 48, 108, 0.08)'
+                }}
+              >
+                <Instagram size={14} /> @peak1club Instagram
+              </a>
+              <a
+                href="mailto:support@peak1.app"
+                className="btn btn-ghost btn-sm text-dim flex items-center gap-xs"
+                style={{ width: 'fit-content', fontSize: '0.75rem' }}
+              >
+                Contact Platform Admin
+              </a>
+            </div>
           </div>
         </div>
 
         <div className="footer-bottom">
           <p>© {new Date().getFullYear()} Peak1 Event Platform. All rights reserved.</p>
-          <div className="flex gap-md">
+          <div className="flex items-center gap-md">
+            <a
+              href={instagramUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-xs text-dim hover:text-white transition-all"
+              style={{ fontSize: '0.75rem', textDecoration: 'none' }}
+            >
+              <Instagram size={14} style={{ color: '#E1306C' }} /> Instagram
+            </a>
             <span>Privacy Policy</span>
             <span>Terms of Service</span>
           </div>
