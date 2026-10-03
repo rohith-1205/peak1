@@ -724,6 +724,11 @@ const updateLeaderboardDetails = async (id, data, actorId) => {
 
   await reg.save();
 
+  // Ensure parent event has hasLeaderboard enabled
+  if (reg.eventId) {
+    await Event.findByIdAndUpdate(reg.eventId, { hasLeaderboard: true });
+  }
+
   if (actorId) {
     await AuditLog.create({
       actorId,

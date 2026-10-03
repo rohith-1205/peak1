@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
@@ -15,6 +15,7 @@ import { getImageUrl } from '../utils/imageUrl';
 export default function EventDetail() {
   const { slug } = useParams();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { user, isRegisteredForEvent, fetchUserRegistrations } = useAuth();
   const { showToast } = useToast();
 
@@ -50,10 +51,17 @@ export default function EventDetail() {
     teamName: ''
   });
 
-  const [activeTab, setActiveTab] = useState('overview');
+  const initialTab = searchParams.get('tab') === 'leaderboard' ? 'leaderboard' : 'overview';
+  const [activeTab, setActiveTab] = useState(initialTab);
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [loadingLeaderboard, setLoadingLeaderboard] = useState(false);
   const [leaderboardSearch, setLeaderboardSearch] = useState('');
+
+  useEffect(() => {
+    if (searchParams.get('tab') === 'leaderboard') {
+      setActiveTab('leaderboard');
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -73,24 +81,24 @@ export default function EventDetail() {
   }, [slug]);
 
   useEffect(() => {
-    if (activeTab === 'leaderboard' || (event && event.hasLeaderboard)) {
-      const fetchLeaderboard = async () => {
-        setLoadingLeaderboard(true);
-        try {
-          const res = await api.get(`/events/${slug}/leaderboard`);
-          if (res.success && res.data?.leaderboard) {
-            setLeaderboardData(res.data.leaderboard);
-          }
-        } catch (err) {
-          console.error('Failed to load leaderboard:', err);
-        } finally {
-          setLoadingLeaderboard(false);
+    const fetchLeaderboard = async () => {
+      setLoadingLeaderboard(true);
+      try {
+        const res = await api.get(`/events/${slug}/leaderboard`);
+        if (res.success && res.data?.leaderboard) {
+          setLeaderboardData(res.data.leaderboard);
         }
-      };
+      } catch (err) {
+        console.error('Failed to load leaderboard:', err);
+      } finally {
+        setLoadingLeaderboard(false);
+      }
+    };
 
+    if (slug) {
       fetchLeaderboard();
     }
-  }, [slug, activeTab, event?.hasLeaderboard]);
+  }, [slug, activeTab]);
 
   if (loading) {
     return (
@@ -325,11 +333,18 @@ export default function EventDetail() {
 
               {isAlreadyRegistered ? (
                 <div className="flex items-center gap-xs flex-wrap">
-                  <span className="badge badge-emerald flex items-center gap-xs" style={{ padding: '0.5rem 0.875rem', fontSize: '0.75rem' }}>
+                  <span className="badge badge-emerald flex items-center gap-xs" style={{ padding: '0.4rem 0.75rem', fontSize: '0.75rem' }}>
                     <CheckCircle2 size={14} /> YOU ARE REGISTERED
                   </span>
-                  <button onClick={() => navigate('/dashboard')} className="btn btn-primary btn-md flex items-center gap-xs">
-                    <Ticket size={16} /> View Pass in Dashboard
+                  <button 
+                    onClick={() => setActiveTab('leaderboard')} 
+                    className="btn btn-secondary btn-sm flex items-center gap-xs" 
+                    style={{ color: 'var(--accent-amber)', borderColor: 'rgba(245, 158, 11, 0.4)' }}
+                  >
+                    <Trophy size={14} /> View Standings
+                  </button>
+                  <button onClick={() => navigate('/dashboard')} className="btn btn-primary btn-sm flex items-center gap-xs">
+                    <Ticket size={14} /> View Pass in Dashboard
                   </button>
                 </div>
               ) : (

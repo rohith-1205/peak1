@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import StatusBadge from '../components/StatusBadge';
-import { Ticket, Calendar, MapPin, QrCode, Printer, Mail, Phone, UserCheck, X } from 'lucide-react';
+import { Ticket, Calendar, MapPin, QrCode, Printer, Mail, Phone, UserCheck, X, Trophy } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 
 export default function UserDashboard() {
@@ -179,6 +179,15 @@ export default function UserDashboard() {
                       {event?.title || 'Event'}
                     </h3>
 
+                    {(reg.leaderboardRank || reg.leaderboardScore !== undefined) ? (
+                      <div className="flex items-center gap-xs p-2 rounded-md" style={{ backgroundColor: 'rgba(245, 158, 11, 0.1)', border: '1px solid rgba(245, 158, 11, 0.3)', width: 'fit-content' }}>
+                        <Trophy size={14} style={{ color: 'var(--accent-amber)' }} />
+                        <span className="font-mono font-bold text-amber-400" style={{ fontSize: '0.75rem' }}>
+                          Rank #{reg.leaderboardRank || 'N/A'} {reg.leaderboardScore !== undefined ? `• Score: ${reg.leaderboardScore}` : ''}
+                        </span>
+                      </div>
+                    ) : null}
+
                     <div className="text-muted flex flex-col gap-xs" style={{ fontSize: '0.75rem' }}>
                       <div className="flex items-center gap-xs">
                         <Calendar size={14} className="text-dim" />
@@ -191,10 +200,16 @@ export default function UserDashboard() {
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between" style={{ paddingTop: '0.75rem', borderTop: '1px solid var(--border-subtle)', marginTop: '0.5rem' }}>
-                    <span className="text-muted" style={{ fontSize: '0.7rem' }}>
-                      Registered: {new Date(reg.createdAt).toLocaleDateString()}
-                    </span>
+                  <div className="flex items-center justify-between gap-xs flex-wrap" style={{ paddingTop: '0.75rem', borderTop: '1px solid var(--border-subtle)', marginTop: '0.5rem' }}>
+                    {event?.slug ? (
+                      <Link
+                        to={`/events/${event.slug}?tab=leaderboard`}
+                        className="btn btn-secondary btn-xs flex items-center gap-xs text-amber-400"
+                        style={{ borderColor: 'rgba(245, 158, 11, 0.3)' }}
+                      >
+                        <Trophy size={13} /> Official Standings
+                      </Link>
+                    ) : <div />}
 
                     <button
                       onClick={() => setSelectedPass(reg)}
