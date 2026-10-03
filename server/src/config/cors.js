@@ -5,18 +5,20 @@ const corsOptions = {
     // allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
     
-    if (env.CLIENT_URLS.includes(origin)) {
+    const cleanOrigin = origin.replace(/\/$/, '');
+    const allowedUrls = env.CLIENT_URLS.map(u => u.trim().replace(/\/$/, ''));
+
+    if (allowedUrls.includes(cleanOrigin) || allowedUrls.includes('*')) {
       return callback(null, true);
     }
     
-    if (env.APP_ENV === 'staging' && process.env.ALLOW_VERCEL_PREVIEWS === 'true') {
-      const vercelRegex = /^https:\/\/.*\.vercel\.app$/;
-      if (vercelRegex.test(origin)) {
-        return callback(null, true);
-      }
+    // Always allow Vercel deployment URLs (*.vercel.app)
+    const vercelRegex = /^https:\/\/.*\.vercel\.app$/;
+    if (vercelRegex.test(cleanOrigin)) {
+      return callback(null, true);
     }
     
-    callback(new Error('Not allowed by CORS'));
+    callback(new Error(`Not allowed by CORS: ${origin}`));
   },
   credentials: true
 };
