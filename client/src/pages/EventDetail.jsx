@@ -19,9 +19,9 @@ export default function EventDetail() {
   const { user, isRegisteredForEvent, fetchUserRegistrations } = useAuth();
   const { showToast } = useToast();
 
+  const [event, setEvent] = useState(null);
   const isAlreadyRegistered = isRegisteredForEvent(event?._id);
 
-  const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
