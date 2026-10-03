@@ -359,32 +359,42 @@ export default function EventDetail() {
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Navigation Tabs */}
-      <div className="flex items-center gap-2 border-b border-slate-800 my-6">
+      </div>      {/* Navigation Tabs */}
+      <div className="flex items-center gap-sm" style={{ borderBottom: '1px solid var(--border-subtle)', marginBottom: '1.5rem', marginTop: '1.5rem' }}>
         <button
+          type="button"
           onClick={() => setActiveTab('overview')}
-          className={`px-5 py-3 font-heading font-bold text-xs uppercase tracking-wider border-b-2 transition flex items-center gap-2 ${
-            activeTab === 'overview'
-              ? 'border-cyan-400 text-cyan-400 bg-cyan-950/20'
-              : 'border-transparent text-slate-400 hover:text-white'
-          }`}
+          className="btn btn-ghost"
+          style={{
+            padding: '0.75rem 1.25rem',
+            fontSize: '0.8125rem',
+            borderRadius: '0',
+            borderBottom: activeTab === 'overview' ? '2px solid var(--accent-cyan)' : '2px solid transparent',
+            color: activeTab === 'overview' ? 'var(--accent-cyan)' : 'var(--text-muted)',
+            backgroundColor: activeTab === 'overview' ? 'rgba(6, 182, 212, 0.08)' : 'transparent',
+            fontWeight: 700
+          }}
         >
           <FileText size={15} /> Overview & Specs
         </button>
 
         <button
+          type="button"
           onClick={() => setActiveTab('leaderboard')}
-          className={`px-5 py-3 font-heading font-bold text-xs uppercase tracking-wider border-b-2 transition flex items-center gap-2 ${
-            activeTab === 'leaderboard'
-              ? 'border-amber-400 text-amber-400 bg-amber-950/20'
-              : 'border-transparent text-slate-400 hover:text-white'
-          }`}
+          className="btn btn-ghost"
+          style={{
+            padding: '0.75rem 1.25rem',
+            fontSize: '0.8125rem',
+            borderRadius: '0',
+            borderBottom: activeTab === 'leaderboard' ? '2px solid var(--accent-amber)' : '2px solid transparent',
+            color: activeTab === 'leaderboard' ? 'var(--accent-amber)' : 'var(--text-muted)',
+            backgroundColor: activeTab === 'leaderboard' ? 'rgba(245, 158, 11, 0.08)' : 'transparent',
+            fontWeight: 700
+          }}
         >
           <Trophy size={15} /> {event.leaderboardTitle || 'Official Standings'}
           {leaderboardData.length > 0 && (
-            <span className="px-2 py-0.5 text-[10px] bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded-full font-mono">
+            <span className="badge badge-amber font-mono" style={{ fontSize: '0.625rem', padding: '0.1rem 0.4rem', marginLeft: '0.35rem' }}>
               {leaderboardData.length}
             </span>
           )}
@@ -476,82 +486,85 @@ export default function EventDetail() {
         /* Leaderboard Tab Content */
         <div className="flex flex-col gap-lg">
           {/* Header Banner */}
-          <div className="card-mono p-6 bg-gradient-to-r from-amber-950/40 via-slate-900 to-amber-900/30 border-amber-500/30 flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 shrink-0">
-                <Trophy size={26} />
+          <div className="card-mono" style={{ padding: '1.25rem 1.5rem', background: 'linear-gradient(135deg, rgba(30, 27, 75, 0.4), rgba(15, 23, 42, 0.95), rgba(69, 26, 3, 0.4))', border: '1px solid rgba(245, 158, 11, 0.3)' }}>
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-md">
+              <div className="flex items-center gap-md">
+                <div style={{ width: '3rem', height: '3rem', borderRadius: '12px', backgroundColor: 'rgba(245, 158, 11, 0.15)', border: '1px solid rgba(245, 158, 11, 0.3)', display: 'flex', items: 'center', justifyContent: 'center', color: 'var(--accent-amber)', flexShrink: 0 }}>
+                  <Trophy size={24} />
+                </div>
+                <div>
+                  <h3 className="section-title" style={{ fontSize: '1.125rem', color: '#FFFFFF' }}>
+                    {event.leaderboardTitle || 'Official Race Standings'}
+                  </h3>
+                  <p className="text-muted" style={{ fontSize: '0.75rem', marginTop: '0.2rem' }}>
+                    Live timing, lap scores, and position rankings verified by Peak1 Gate Systems
+                  </p>
+                </div>
               </div>
-              <div>
-                <h3 className="text-lg font-heading font-bold text-white uppercase tracking-wider">
-                  {event.leaderboardTitle || 'Official Race Standings'}
-                </h3>
-                <p className="text-xs text-slate-300">
-                  Live timing, lap scores, and position rankings verified by Peak1 Gate Systems
-                </p>
-              </div>
-            </div>
 
-            {/* Search Filter */}
-            <div className="relative w-full md:w-64">
-              <Search size={14} className="text-dim absolute left-3 top-3" />
-              <input
-                type="text"
-                value={leaderboardSearch}
-                onChange={(e) => setLeaderboardSearch(e.target.value)}
-                placeholder="Search racer, vehicle, bib..."
-                className="form-input text-xs pl-9"
-              />
+              {/* Search Filter */}
+              <div style={{ position: 'relative', width: '100%', maxWidth: '18rem' }}>
+                <Search size={14} className="text-dim" style={{ position: 'absolute', left: '0.75rem', top: '0.65rem' }} />
+                <input
+                  type="text"
+                  value={leaderboardSearch}
+                  onChange={(e) => setLeaderboardSearch(e.target.value)}
+                  placeholder="Search racer, vehicle, pass..."
+                  className="form-input"
+                  style={{ paddingLeft: '2.25rem', paddingBlock: '0.45rem', fontSize: '0.75rem' }}
+                />
+              </div>
             </div>
           </div>
 
           {/* Top 3 Winner Podium */}
           {leaderboardData.length >= 3 && !leaderboardSearch && (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 my-2 items-end">
+            <div className="grid grid-3 gap-md items-end" style={{ marginBlock: '0.5rem' }}>
               {/* 2nd Place */}
-              <div className="card-mono p-5 text-center border-slate-700 bg-slate-900/60 flex flex-col items-center gap-2 order-2 md:order-1 transform hover:-translate-y-1 transition">
-                <div className="w-10 h-10 rounded-full bg-slate-700/50 border border-slate-400 text-slate-300 flex items-center justify-center font-bold text-sm">
+              <div className="card-mono text-center flex flex-col items-center gap-xs" style={{ padding: '1.25rem', backgroundColor: 'rgba(255, 255, 255, 0.02)' }}>
+                <div style={{ width: '2.5rem', height: '2.5rem', borderRadius: '9999px', backgroundColor: 'rgba(255,255,255,0.08)', border: '1px solid var(--border-medium)', color: '#E2E8F0', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '0.8125rem' }}>
                   🥈 2nd
                 </div>
-                <h4 className="font-heading font-bold text-white text-base truncate w-full">
+                <h4 className="font-bold text-white truncate w-full" style={{ fontSize: '0.95rem' }}>
                   {leaderboardData[1].participantName}
                 </h4>
-                <span className="text-xs font-mono text-cyan-400">
+                <span className="text-dim font-mono" style={{ fontSize: '0.725rem' }}>
                   {leaderboardData[1].vehicleModel || 'Participant'}
                 </span>
-                <div className="mt-2 px-3 py-1 bg-slate-800 rounded-lg text-xs font-mono font-bold text-slate-200">
+                <div className="badge" style={{ marginTop: '0.5rem', fontSize: '0.7rem' }}>
                   Score / Lap: {leaderboardData[1].leaderboardScore > 0 ? leaderboardData[1].leaderboardScore : 'Runner Up'}
                 </div>
               </div>
 
               {/* 1st Place (Gold Winner) */}
-              <div className="card-mono p-6 text-center border-amber-500/50 bg-gradient-to-b from-amber-950/60 to-slate-900 flex flex-col items-center gap-2 order-1 md:order-2 transform -translate-y-2 hover:-translate-y-3 transition shadow-xl shadow-amber-500/10">
-                <div className="w-12 h-12 rounded-full bg-amber-500/20 border-2 border-amber-400 text-amber-300 flex items-center justify-center font-bold text-base">
+              <div className="card-mono text-center flex flex-col items-center gap-xs" style={{ padding: '1.5rem', background: 'linear-gradient(to bottom, rgba(245, 158, 11, 0.15), rgba(15, 23, 42, 0.95))', border: '1px solid rgba(245, 158, 11, 0.4)' }}>
+                <div style={{ width: '3rem', height: '3rem', borderRadius: '9999px', backgroundColor: 'rgba(245, 158, 11, 0.2)', border: '2px solid var(--accent-amber)', color: 'var(--accent-amber)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '1rem' }}>
                   🥇 1st
                 </div>
-                <span className="text-[10px] font-bold tracking-widest text-amber-400 uppercase">EVENT CHAMPION</span>
-                <h4 className="font-heading font-extrabold text-white text-lg truncate w-full">
+                <span className="label-eyebrow" style={{ fontSize: '0.6rem', color: 'var(--accent-amber)' }}>EVENT CHAMPION</span>
+                <h4 className="font-extrabold text-white truncate w-full" style={{ fontSize: '1.125rem' }}>
                   {leaderboardData[0].participantName}
                 </h4>
-                <span className="text-xs font-mono text-cyan-300">
+                <span className="text-dim font-mono" style={{ fontSize: '0.75rem' }}>
                   {leaderboardData[0].vehicleModel || 'Champion Racer'}
                 </span>
-                <div className="mt-2 px-4 py-1.5 bg-amber-500/20 border border-amber-500/40 rounded-xl text-sm font-mono font-black text-amber-300">
+                <div className="badge badge-amber" style={{ marginTop: '0.5rem', padding: '0.35rem 0.75rem', fontSize: '0.75rem' }}>
                   Score / Time: {leaderboardData[0].leaderboardScore > 0 ? leaderboardData[0].leaderboardScore : 'Winner'}
                 </div>
               </div>
 
               {/* 3rd Place */}
-              <div className="card-mono p-5 text-center border-amber-900/40 bg-slate-900/60 flex flex-col items-center gap-2 order-3 hover:-translate-y-1 transition">
-                <div className="w-10 h-10 rounded-full bg-amber-900/30 border border-amber-700 text-amber-500 flex items-center justify-center font-bold text-sm">
+              <div className="card-mono text-center flex flex-col items-center gap-xs" style={{ padding: '1.25rem', backgroundColor: 'rgba(255, 255, 255, 0.02)' }}>
+                <div style={{ width: '2.5rem', height: '2.5rem', borderRadius: '9999px', backgroundColor: 'rgba(255,255,255,0.08)', border: '1px solid var(--border-medium)', color: '#CBD5E1', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '0.8125rem' }}>
                   🥉 3rd
                 </div>
-                <h4 className="font-heading font-bold text-white text-base truncate w-full">
+                <h4 className="font-bold text-white truncate w-full" style={{ fontSize: '0.95rem' }}>
                   {leaderboardData[2].participantName}
                 </h4>
-                <span className="text-xs font-mono text-cyan-400">
+                <span className="text-dim font-mono" style={{ fontSize: '0.725rem' }}>
                   {leaderboardData[2].vehicleModel || 'Participant'}
                 </span>
-                <div className="mt-2 px-3 py-1 bg-slate-800 rounded-lg text-xs font-mono font-bold text-slate-200">
+                <div className="badge" style={{ marginTop: '0.5rem', fontSize: '0.7rem' }}>
                   Score / Lap: {leaderboardData[2].leaderboardScore > 0 ? leaderboardData[2].leaderboardScore : '3rd Place'}
                 </div>
               </div>
@@ -560,7 +573,7 @@ export default function EventDetail() {
 
           {/* Standings Table */}
           {loadingLeaderboard ? (
-            <div className="card-mono p-8 text-center text-slate-400 font-mono text-xs">
+            <div className="card-mono text-center text-muted font-mono" style={{ padding: '2.5rem', fontSize: '0.75rem' }}>
               Loading Official Standings...
             </div>
           ) : (() => {
@@ -578,10 +591,10 @@ export default function EventDetail() {
 
             if (filtered.length === 0) {
               return (
-                <div className="card-mono p-8 text-center flex flex-col items-center gap-2">
-                  <Flame size={28} className="text-amber-500/60" />
-                  <h4 className="text-white font-bold text-sm">No Standings Recorded Yet</h4>
-                  <p className="text-slate-400 text-xs max-w-sm">
+                <div className="card-mono text-center flex flex-col items-center gap-xs" style={{ padding: '2.5rem' }}>
+                  <Flame size={28} className="text-dim" />
+                  <h4 className="text-white font-bold" style={{ fontSize: '0.875rem' }}>No Standings Recorded Yet</h4>
+                  <p className="text-muted" style={{ fontSize: '0.75rem', maxWidth: '24rem' }}>
                     Live race times and scores will be updated here as participants check in and complete their laps.
                   </p>
                 </div>
@@ -589,58 +602,60 @@ export default function EventDetail() {
             }
 
             return (
-              <div className="table-container">
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th style={{ width: '80px' }}>Rank</th>
-                      <th>Participant Name</th>
-                      <th>Vehicle / Details</th>
-                      <th>Team / Squad</th>
-                      <th>Pass ID</th>
-                      <th style={{ textAlign: 'right' }}>Score / Time</th>
-                      <th style={{ textAlign: 'center' }}>Gate Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filtered.map((item, idx) => (
-                      <tr key={item.registrationId || idx}>
-                        <td className="font-mono font-bold">
-                          {item.leaderboardRank === 1 && <span className="text-amber-400">🥇 #1</span>}
-                          {item.leaderboardRank === 2 && <span className="text-slate-300">🥈 #2</span>}
-                          {item.leaderboardRank === 3 && <span className="text-amber-600">🥉 #3</span>}
-                          {item.leaderboardRank > 3 && `#${item.leaderboardRank}`}
-                        </td>
-                        <td>
-                          <span className="font-bold text-white block">{item.participantName}</span>
-                          {item.city && <span className="text-slate-400 text-[11px]">{item.city}</span>}
-                        </td>
-                        <td>
-                          <span className="font-mono text-cyan-300 text-xs block">{item.vehicleModel || '-'}</span>
-                          {item.vehicleNumber && <span className="text-slate-400 text-[10px] font-mono">{item.vehicleNumber}</span>}
-                        </td>
-                        <td className="text-slate-300 text-xs">{item.teamName || '-'}</td>
-                        <td className="font-mono text-xs text-slate-400">{item.registrationId}</td>
-                        <td className="font-mono font-bold text-white text-right">
-                          {item.leaderboardScore > 0 ? (
-                            <span className="px-2 py-1 bg-cyan-950 border border-cyan-800 text-cyan-300 rounded">
-                              {item.leaderboardScore}
-                            </span>
-                          ) : (
-                            <span className="text-slate-500">-</span>
-                          )}
-                        </td>
-                        <td style={{ textAlign: 'center' }}>
-                          {item.isCheckedIn ? (
-                            <span className="badge badge-emerald text-[10px]">Checked In</span>
-                          ) : (
-                            <span className="badge badge-amber text-[10px]">Registered</span>
-                          )}
-                        </td>
+              <div className="card-mono" style={{ padding: '0.5rem' }}>
+                <div className="table-container" style={{ border: 'none' }}>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th style={{ width: '90px' }}>Rank</th>
+                        <th>Participant Name</th>
+                        <th>Vehicle / Details</th>
+                        <th>Team / Squad</th>
+                        <th>Pass ID</th>
+                        <th style={{ textAlign: 'right' }}>Score / Time</th>
+                        <th style={{ textAlign: 'center' }}>Gate Status</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {filtered.map((item, idx) => (
+                        <tr key={item.registrationId || idx}>
+                          <td className="font-mono font-bold whitespace-nowrap">
+                            {item.leaderboardRank === 1 && <span style={{ color: 'var(--accent-amber)' }}>🥇 #1</span>}
+                            {item.leaderboardRank === 2 && <span style={{ color: '#E2E8F0' }}>🥈 #2</span>}
+                            {item.leaderboardRank === 3 && <span style={{ color: '#CBD5E1' }}>🥉 #3</span>}
+                            {item.leaderboardRank > 3 && `#${item.leaderboardRank}`}
+                          </td>
+                          <td>
+                            <span className="font-bold text-white block" style={{ fontSize: '0.8125rem' }}>{item.participantName}</span>
+                            {item.city && <span className="text-dim" style={{ fontSize: '0.725rem' }}>{item.city}</span>}
+                          </td>
+                          <td>
+                            <span className="font-mono text-white block" style={{ fontSize: '0.75rem' }}>{item.vehicleModel || '-'}</span>
+                            {item.vehicleNumber && <span className="text-dim font-mono" style={{ fontSize: '0.675rem' }}>{item.vehicleNumber}</span>}
+                          </td>
+                          <td className="text-muted" style={{ fontSize: '0.8125rem' }}>{item.teamName || '-'}</td>
+                          <td className="font-mono text-dim whitespace-nowrap" style={{ fontSize: '0.75rem' }}>{item.registrationId}</td>
+                          <td className="font-mono font-bold text-white whitespace-nowrap" style={{ textAlign: 'right' }}>
+                            {item.leaderboardScore > 0 ? (
+                              <span className="badge badge-emerald">
+                                {item.leaderboardScore}
+                              </span>
+                            ) : (
+                              <span className="text-dim">-</span>
+                            )}
+                          </td>
+                          <td style={{ textAlign: 'center' }} className="whitespace-nowrap">
+                            {item.isCheckedIn ? (
+                              <span className="badge badge-emerald">Checked In</span>
+                            ) : (
+                              <span className="badge">Registered</span>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             );
           })()}
