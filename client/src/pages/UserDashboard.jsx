@@ -111,36 +111,36 @@ export default function UserDashboard() {
       )}
 
       {/* Header Profile Section */}
-      <div className="card-mono" style={{ padding: '2rem' }}>
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-lg">
-          <div className="flex items-center gap-md">
-            <div className="brand-badge" style={{ width: '3.5rem', height: '3.5rem', fontSize: '1.5rem' }}>
+      <div className="card-mono" style={{ padding: '1.25rem 1.5rem' }}>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-md">
+          <div className="flex items-start sm:items-center gap-md flex-wrap w-full sm:w-auto">
+            <div className="brand-badge shrink-0" style={{ width: '3rem', height: '3rem', fontSize: '1.25rem', minWidth: '3rem', minHeight: '3rem' }}>
               {user?.name?.[0]}
             </div>
-            <div>
-              <div className="flex items-center gap-sm">
-                <h1 className="section-title" style={{ fontSize: '1.5rem' }}>{user?.name}</h1>
-                <Link to="/profile" className="btn btn-secondary btn-xs flex items-center gap-xs" style={{ fontSize: '0.7rem', padding: '0.2rem 0.6rem' }}>
+            <div className="flex flex-col gap-xs flex-1" style={{ minWidth: 0 }}>
+              <div className="flex items-center gap-xs flex-wrap">
+                <h1 className="section-title truncate" style={{ fontSize: '1.25rem' }}>{user?.name}</h1>
+                <Link to="/profile" className="btn btn-secondary btn-xs flex items-center gap-xs" style={{ fontSize: '0.6875rem', padding: '0.2rem 0.5rem', whiteSpace: 'nowrap' }}>
                   <UserCheck size={12} /> Edit Profile ({completionPercentage}%)
                 </Link>
+                <span className="badge" style={{ fontSize: '0.65rem' }}>{user?.role}</span>
               </div>
-              <div className="flex items-center gap-md text-muted" style={{ fontSize: '0.75rem', marginTop: '0.25rem' }}>
-                <span className="flex items-center gap-xs"><Mail size={12} /> {user?.email}</span>
-                {user?.phone && <span className="flex items-center gap-xs"><Phone size={12} /> {user?.phone}</span>}
-                <span className="badge">{user?.role}</span>
+              <div className="flex items-center gap-sm text-muted flex-wrap" style={{ fontSize: '0.75rem' }}>
+                <span className="flex items-center gap-xs truncate"><Mail size={12} className="shrink-0" /> {user?.email}</span>
+                {user?.phone && <span className="flex items-center gap-xs truncate"><Phone size={12} className="shrink-0" /> {user?.phone}</span>}
               </div>
             </div>
           </div>
 
-          <div className="flex items-center gap-xl">
+          <div className="flex items-center justify-around sm:justify-end gap-lg w-full sm:w-auto pt-3 sm:pt-0" style={{ borderTop: '1px solid var(--border-subtle)' }}>
             <div className="text-center">
-              <span className="font-heading font-black text-white block" style={{ fontSize: '1.5rem' }}>
+              <span className="font-heading font-black text-white block" style={{ fontSize: '1.25rem' }}>
                 {registrations.length}
               </span>
               <span className="label-eyebrow" style={{ fontSize: '0.65rem' }}>Registered Passes</span>
             </div>
             <div className="text-center">
-              <span className="font-heading font-black text-white block" style={{ fontSize: '1.5rem' }}>
+              <span className="font-heading font-black text-white block" style={{ fontSize: '1.25rem' }}>
                 {registrations.filter(r => r.status === 'CONFIRMED' || r.status === 'CHECKED_IN').length}
               </span>
               <span className="label-eyebrow" style={{ fontSize: '0.65rem' }}>Confirmed</span>

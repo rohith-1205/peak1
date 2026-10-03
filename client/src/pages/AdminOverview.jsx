@@ -56,28 +56,25 @@ export default function AdminOverview() {
   return (
     <div className="flex flex-col gap-lg">
       {/* Header Bar */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-md" style={{ paddingBottom: '1rem', borderBottom: '1px solid var(--border-subtle)' }}>
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-md" style={{ paddingBottom: '1rem', borderBottom: '1px solid var(--border-subtle)' }}>
         <div>
           <span className="label-eyebrow flex items-center gap-xs">
             <Shield size={14} className="text-white" /> ORGANIZER CONSOLE
           </span>
-          <h1 className="page-title" style={{ marginTop: '0.25rem' }}>
+          <h1 className="page-title" style={{ marginTop: '0.25rem', fontSize: '1.25rem' }}>
             ADMIN OVERVIEW & TELEMETRY
           </h1>
         </div>
 
-        <div className="flex items-center gap-sm">
-          <Link to="/admin/events/new" className="btn btn-primary btn-sm">
+        <div className="flex items-center gap-xs flex-wrap w-full sm:w-auto">
+          <Link to="/admin/events/new" className="btn btn-primary btn-sm flex-1 sm:flex-initial justify-center" style={{ fontSize: '0.75rem', padding: '0.4rem 0.75rem' }}>
             <Plus size={14} /> Create Event
           </Link>
-          <Link to="/admin/events" className="btn btn-secondary btn-sm">
-            <Calendar size={14} /> Manage Catalog
+          <Link to="/admin/events" className="btn btn-secondary btn-sm flex-1 sm:flex-initial justify-center" style={{ fontSize: '0.75rem', padding: '0.4rem 0.75rem' }}>
+            <Calendar size={14} /> Catalog
           </Link>
-          <Link to="/admin/registrations" className="btn btn-secondary btn-sm">
-            <Users size={14} /> Roster & QR Gate
-          </Link>
-          <Link to="/" className="btn btn-ghost btn-sm text-dim" title="View Public Live Site">
-            <ExternalLink size={14} /> Live Site
+          <Link to="/admin/registrations" className="btn btn-secondary btn-sm flex-1 sm:flex-initial justify-center" style={{ fontSize: '0.75rem', padding: '0.4rem 0.75rem' }}>
+            <Users size={14} /> Gate
           </Link>
         </div>
       </div>

@@ -70,8 +70,8 @@ export default function AdminLayout() {
           </Link>
           
           <div className="flex items-center gap-xs font-mono text-muted" style={{ fontSize: '0.75rem' }}>
-            <Shield size={14} className="text-white" />
-            <span className="text-white font-bold">{adminUser?.name || 'Administrator'}</span>
+            <Shield size={14} className="text-white shrink-0" />
+            <span className="text-white font-bold admin-user-name">{adminUser?.name || 'Admin'}</span>
           </div>
 
           <button onClick={handleAdminLogout} className="btn btn-ghost btn-sm text-dim" title="Log Out of Admin Console">
