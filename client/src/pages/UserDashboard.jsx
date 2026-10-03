@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import StatusBadge from '../components/StatusBadge';
-import { Ticket, Calendar, MapPin, QrCode, Printer, Mail, Phone } from 'lucide-react';
+import { Ticket, Calendar, MapPin, QrCode, Printer, Mail, Phone, UserCheck, X } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 
 export default function UserDashboard() {
@@ -10,6 +11,7 @@ export default function UserDashboard() {
   const [registrations, setRegistrations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedPass, setSelectedPass] = useState(null);
+  const [showProfileBanner, setShowProfileBanner] = useState(true);
 
   useEffect(() => {
     const fetchRegistrations = async () => {
@@ -27,8 +29,6 @@ export default function UserDashboard() {
     fetchRegistrations();
   }, []);
 
-  const [showProfileBanner, setShowProfileBanner] = useState(true);
-
   // Compute profile completion percentage
   const profile = user?.profile || {};
   const profileFields = [user?.name, user?.email, user?.phone, profile.dob, profile.gender, profile.city, profile.emergencyContactName, profile.bloodGroup, profile.tShirtSize];
@@ -39,39 +39,72 @@ export default function UserDashboard() {
     <div className="container page-wrapper" style={{ paddingTop: '2.5rem' }}>
       {/* Complete Your Profile Banner */}
       {showProfileBanner && completionPercentage < 100 && (
-        <div className="bg-gradient-to-r from-cyan-900/60 via-slate-900 to-emerald-900/60 border border-cyan-500/30 rounded-2xl p-4 md:p-5 mb-6 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl">
-          <div className="flex items-center gap-4">
+        <div
+          className="card-mono"
+          style={{
+            padding: '1.25rem 1.5rem',
+            marginBottom: '1.5rem',
+            background: 'linear-gradient(135deg, rgba(8, 51, 68, 0.7), rgba(15, 23, 42, 0.95), rgba(6, 78, 59, 0.7))',
+            border: '1px solid rgba(6, 182, 212, 0.4)',
+            borderRadius: '16px',
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '1rem',
+            flexWrap: 'wrap',
+            boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.5)'
+          }}
+        >
+          <div className="flex items-center gap-md" style={{ flex: '1 1 280px' }}>
             {/* Progress Ring */}
-            <div className="relative w-12 h-12 flex items-center justify-center shrink-0">
-              <svg className="w-12 h-12 transform -rotate-90">
-                <circle cx="24" cy="24" r="20" stroke="currentColor" strokeWidth="4" className="text-slate-800" fill="transparent" />
+            <div style={{ position: 'relative', width: '48px', height: '48px', minWidth: '48px', minHeight: '48px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <svg width="48" height="48" viewBox="0 0 48 48" style={{ transform: 'rotate(-90deg)' }}>
+                <circle cx="24" cy="24" r="20" stroke="rgba(255,255,255,0.1)" strokeWidth="4" fill="transparent" />
                 <circle
                   cx="24"
                   cy="24"
                   r="20"
-                  stroke="currentColor"
+                  stroke="var(--accent-cyan)"
                   strokeWidth="4"
-                  className="text-cyan-400 transition-all duration-700"
                   fill="transparent"
                   strokeDasharray={125.6}
                   strokeDashoffset={125.6 - (125.6 * completionPercentage) / 100}
+                  style={{ transition: 'stroke-dashoffset 0.5s ease' }}
                 />
               </svg>
-              <span className="absolute text-xs font-bold text-white">{completionPercentage}%</span>
+              <span style={{ position: 'absolute', fontSize: '0.75rem', fontWeight: 800, color: '#FFFFFF' }}>
+                {completionPercentage}%
+              </span>
             </div>
 
             <div>
-              <h4 className="text-sm font-bold text-white">Complete Your Participant Profile</h4>
-              <p className="text-xs text-slate-300">Fast-track your race registration by saving your emergency contact, DOB & details.</p>
+              <h4 className="font-heading font-bold text-white" style={{ fontSize: '0.95rem', margin: 0 }}>
+                Complete Your Participant Profile
+              </h4>
+              <p className="text-muted" style={{ fontSize: '0.75rem', margin: '0.2rem 0 0 0', lineHeight: '1.4' }}>
+                Save your emergency contact, DOB & details once to fast-track all future event registrations.
+              </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 self-end sm:self-center">
-            <a href="/profile" className="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-xl text-xs transition">
-              Complete Profile
-            </a>
-            <button onClick={() => setShowProfileBanner(false)} className="px-3 py-2 text-slate-400 hover:text-white text-xs">
-              Dismiss
+          {/* Action Buttons */}
+          <div className="flex items-center gap-xs" style={{ shrink: 0 }}>
+            <Link
+              to="/profile"
+              className="btn btn-primary btn-sm"
+              style={{ paddingInline: '1.25rem', whiteSpace: 'nowrap' }}
+            >
+              <UserCheck size={14} /> Complete Profile
+            </Link>
+            <button
+              type="button"
+              onClick={() => setShowProfileBanner(false)}
+              className="btn btn-ghost btn-sm text-muted"
+              style={{ paddingInline: '0.75rem', whiteSpace: 'nowrap', border: '1px solid var(--border-subtle)' }}
+              title="Dismiss banner"
+            >
+              <X size={14} /> Dismiss
             </button>
           </div>
         </div>
@@ -85,7 +118,12 @@ export default function UserDashboard() {
               {user?.name?.[0]}
             </div>
             <div>
-              <h1 className="section-title" style={{ fontSize: '1.5rem' }}>{user?.name}</h1>
+              <div className="flex items-center gap-sm">
+                <h1 className="section-title" style={{ fontSize: '1.5rem' }}>{user?.name}</h1>
+                <Link to="/profile" className="btn btn-secondary btn-xs flex items-center gap-xs" style={{ fontSize: '0.7rem', padding: '0.2rem 0.6rem' }}>
+                  <UserCheck size={12} /> Edit Profile ({completionPercentage}%)
+                </Link>
+              </div>
               <div className="flex items-center gap-md text-muted" style={{ fontSize: '0.75rem', marginTop: '0.25rem' }}>
                 <span className="flex items-center gap-xs"><Mail size={12} /> {user?.email}</span>
                 {user?.phone && <span className="flex items-center gap-xs"><Phone size={12} /> {user?.phone}</span>}
