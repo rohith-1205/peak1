@@ -179,15 +179,6 @@ export default function UserDashboard() {
                       {event?.title || 'Event'}
                     </h3>
 
-                    {(reg.leaderboardRank || reg.leaderboardScore !== undefined) ? (
-                      <div className="flex items-center gap-xs p-2 rounded-md" style={{ backgroundColor: 'rgba(245, 158, 11, 0.1)', border: '1px solid rgba(245, 158, 11, 0.3)', width: 'fit-content' }}>
-                        <Trophy size={14} style={{ color: 'var(--accent-amber)' }} />
-                        <span className="font-mono font-bold text-amber-400" style={{ fontSize: '0.75rem' }}>
-                          Rank #{reg.leaderboardRank || 'N/A'} {reg.leaderboardScore !== undefined ? `• Score: ${reg.leaderboardScore}` : ''}
-                        </span>
-                      </div>
-                    ) : null}
-
                     <div className="text-muted flex flex-col gap-xs" style={{ fontSize: '0.75rem' }}>
                       <div className="flex items-center gap-xs">
                         <Calendar size={14} className="text-dim" />
@@ -204,10 +195,10 @@ export default function UserDashboard() {
                     {event?.slug ? (
                       <Link
                         to={`/events/${event.slug}?tab=leaderboard`}
-                        className="btn btn-secondary btn-xs flex items-center gap-xs text-amber-400"
+                        className="btn btn-secondary btn-sm flex items-center gap-xs text-amber-400"
                         style={{ borderColor: 'rgba(245, 158, 11, 0.3)' }}
                       >
-                        <Trophy size={13} /> Official Standings
+                        <Trophy size={14} /> View Event Leaderboard
                       </Link>
                     ) : <div />}
 
