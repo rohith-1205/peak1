@@ -171,15 +171,15 @@ export default function AdminRegistrations() {
   return (
     <div className="flex flex-col gap-lg">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-md" style={{ paddingBottom: '1rem', borderBottom: '1px solid var(--border-subtle)' }}>
+      <div className="card-mono flex flex-col sm:flex-row items-start sm:items-center justify-between gap-md p-4" style={{ backgroundColor: 'var(--bg-glass-card)', borderColor: 'var(--border-subtle)', borderRadius: '12px' }}>
         <div>
-          <span className="label-eyebrow">GATE CONTROL</span>
-          <h1 className="page-title" style={{ marginTop: '0.25rem' }}>
+          <span className="label-eyebrow" style={{ color: 'var(--accent-cyan)' }}>GATE CONTROL</span>
+          <h1 className="page-title" style={{ marginTop: '0.25rem', fontSize: '1.35rem', letterSpacing: '-0.02em', color: '#FFFFFF' }}>
             PARTICIPANT ROSTER & CHECK-IN
           </h1>
         </div>
 
-        <div className="flex items-center gap-sm">
+        <div className="flex items-center gap-sm flex-wrap w-full sm:w-auto">
           <button
             onClick={() => {
               setCheckInModalOpen(true);
@@ -187,18 +187,18 @@ export default function AdminRegistrations() {
               setCheckInResult(null);
               setCheckInError('');
             }}
-            className="btn btn-primary btn-sm"
+            className="btn btn-primary btn-sm flex-1 sm:flex-initial justify-center"
           >
             <QrCode size={14} /> Live QR Gate Check-in
           </button>
-          <button onClick={handleExportCSV} className="btn btn-secondary btn-sm">
+          <button onClick={handleExportCSV} className="btn btn-secondary btn-sm flex-1 sm:flex-initial justify-center">
             <Download size={14} /> Export CSV Roster
           </button>
         </div>
       </div>
 
       {/* Filter Bar */}
-      <div className="card-mono" style={{ padding: '0.75rem 1rem' }}>
+      <div className="card-mono p-3" style={{ backgroundColor: 'var(--bg-glass-card)', borderColor: 'var(--border-subtle)', borderRadius: '12px' }}>
         <div className="flex flex-col md:flex-row gap-sm items-center justify-between">
           <div style={{ position: 'relative', flex: 1, width: '100%' }}>
             <Search size={14} className="text-dim" style={{ position: 'absolute', left: '0.75rem', top: '0.65rem' }} />
@@ -247,11 +247,11 @@ export default function AdminRegistrations() {
       </div>
 
       {/* Table */}
-      <div className="card-mono" style={{ padding: '0.5rem' }}>
+      <div className="card-mono" style={{ padding: '0.5rem', backgroundColor: 'var(--bg-glass-card)', borderColor: 'var(--border-subtle)', borderRadius: '12px' }}>
         {loading ? (
           <div className="text-center text-muted" style={{ padding: '2.5rem' }}>Loading participant roster...</div>
         ) : registrations.length > 0 ? (
-          <div className="table-container" style={{ border: 'none' }}>
+          <div className="table-container" style={{ border: 'none', borderRadius: '8px' }}>
             <table className="data-table">
               <thead>
                 <tr>

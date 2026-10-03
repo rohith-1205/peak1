@@ -78,21 +78,21 @@ export default function AdminEvents() {
   return (
     <div className="flex flex-col gap-lg">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-md" style={{ paddingBottom: '1rem', borderBottom: '1px solid var(--border-subtle)' }}>
+      <div className="card-mono flex flex-col sm:flex-row items-start sm:items-center justify-between gap-md p-4" style={{ backgroundColor: 'var(--bg-glass-card)', borderColor: 'var(--border-subtle)', borderRadius: '12px' }}>
         <div>
-          <span className="label-eyebrow">MANAGEMENT</span>
-          <h1 className="page-title" style={{ marginTop: '0.25rem' }}>
+          <span className="label-eyebrow" style={{ color: 'var(--accent-amber)' }}>CATALOG MANAGEMENT</span>
+          <h1 className="page-title" style={{ marginTop: '0.25rem', fontSize: '1.35rem', letterSpacing: '-0.02em', color: '#FFFFFF' }}>
             EVENT CATALOG & PUBLISHING
           </h1>
         </div>
 
-        <Link to="/admin/events/new" className="btn btn-primary btn-sm">
+        <Link to="/admin/events/new" className="btn btn-primary btn-sm flex items-center gap-xs">
           <Plus size={14} /> Create New Event
         </Link>
       </div>
 
       {/* Search & Filter Toolbar */}
-      <div className="card-mono" style={{ padding: '0.75rem 1rem' }}>
+      <div className="card-mono p-3" style={{ backgroundColor: 'var(--bg-glass-card)', borderColor: 'var(--border-subtle)', borderRadius: '12px' }}>
         <div className="flex flex-col sm:flex-row gap-sm items-center justify-between">
           <div style={{ position: 'relative', flex: 1, width: '100%' }}>
             <Search size={14} className="text-dim" style={{ position: 'absolute', left: '0.75rem', top: '0.65rem' }} />
@@ -124,11 +124,11 @@ export default function AdminEvents() {
       </div>
 
       {/* Events Data Table */}
-      <div className="card-mono" style={{ padding: '0.5rem' }}>
+      <div className="card-mono" style={{ padding: '0.5rem', backgroundColor: 'var(--bg-glass-card)', borderColor: 'var(--border-subtle)', borderRadius: '12px' }}>
         {loading ? (
           <div className="text-center text-muted" style={{ padding: '2.5rem' }}>Loading event catalog...</div>
         ) : events.length > 0 ? (
-          <div className="table-container" style={{ border: 'none' }}>
+          <div className="table-container" style={{ border: 'none', borderRadius: '8px' }}>
             <table className="data-table">
               <thead>
                 <tr>

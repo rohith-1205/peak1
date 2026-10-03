@@ -56,68 +56,79 @@ export default function AdminOverview() {
   return (
     <div className="flex flex-col gap-lg">
       {/* Header Bar */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-md" style={{ paddingBottom: '1rem', borderBottom: '1px solid var(--border-subtle)' }}>
+      <div className="card-mono flex flex-col sm:flex-row items-start sm:items-center justify-between gap-md p-4" style={{ backgroundColor: 'var(--bg-glass-card)', borderColor: 'var(--border-subtle)', borderRadius: '12px' }}>
         <div>
-          <span className="label-eyebrow flex items-center gap-xs">
-            <Shield size={14} className="text-white" /> ORGANIZER CONSOLE
-          </span>
-          <h1 className="page-title" style={{ marginTop: '0.25rem', fontSize: '1.25rem' }}>
+          <div className="flex items-center gap-xs">
+            <span className="label-eyebrow flex items-center gap-xs" style={{ color: 'var(--accent-cyan)' }}>
+              <Shield size={14} /> ORGANIZER CONSOLE
+            </span>
+            <span className="badge badge-emerald font-mono" style={{ fontSize: '0.625rem', padding: '0.15rem 0.5rem' }}>
+              ● TELEMETRY LIVE
+            </span>
+          </div>
+          <h1 className="page-title" style={{ marginTop: '0.35rem', fontSize: '1.35rem', letterSpacing: '-0.02em', color: '#FFFFFF' }}>
             ADMIN OVERVIEW & TELEMETRY
           </h1>
         </div>
 
         <div className="flex items-center gap-xs flex-wrap w-full sm:w-auto">
-          <Link to="/admin/events/new" className="btn btn-primary btn-sm flex-1 sm:flex-initial justify-center" style={{ fontSize: '0.75rem', padding: '0.4rem 0.75rem' }}>
+          <Link to="/admin/events/new" className="btn btn-primary btn-sm flex-1 sm:flex-initial justify-center" style={{ fontSize: '0.75rem', padding: '0.45rem 0.85rem' }}>
             <Plus size={14} /> Create Event
           </Link>
-          <Link to="/admin/events" className="btn btn-secondary btn-sm flex-1 sm:flex-initial justify-center" style={{ fontSize: '0.75rem', padding: '0.4rem 0.75rem' }}>
+          <Link to="/admin/events" className="btn btn-secondary btn-sm flex-1 sm:flex-initial justify-center" style={{ fontSize: '0.75rem', padding: '0.45rem 0.85rem' }}>
             <Calendar size={14} /> Catalog
           </Link>
-          <Link to="/admin/registrations" className="btn btn-secondary btn-sm flex-1 sm:flex-initial justify-center" style={{ fontSize: '0.75rem', padding: '0.4rem 0.75rem' }}>
+          <Link to="/admin/registrations" className="btn btn-secondary btn-sm flex-1 sm:flex-initial justify-center" style={{ fontSize: '0.75rem', padding: '0.45rem 0.85rem' }}>
             <Users size={14} /> Gate
           </Link>
         </div>
       </div>
 
       {/* Primary Metrics Grid */}
-      <div className="grid grid-4 gap-md">
-        <Link to="/admin/events" className="card-mono stat-card" style={{ textDecoration: 'none' }}>
+      <div className="grid gap-md" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))' }}>
+        <Link to="/admin/events" className="card-mono stat-card transition-all" style={{ textDecoration: 'none', position: 'relative', overflow: 'hidden', borderLeft: '3px solid var(--accent-cyan)' }}>
           <div>
             <span className="label-eyebrow" style={{ fontSize: '0.65rem' }}>Total Events</span>
-            <p className="stat-number">{overview.totalEvents || 0}</p>
+            <p className="stat-number" style={{ color: '#FFFFFF' }}>{overview.totalEvents || 0}</p>
             <span className="text-dim block" style={{ fontSize: '0.7rem', marginTop: '0.375rem' }}>
               {overview.publishedEvents || 0} Published • {overview.draftEvents || 0} Drafts
             </span>
           </div>
-          <Calendar size={20} className="text-muted" />
+          <div style={{ padding: '0.5rem', borderRadius: '8px', backgroundColor: 'rgba(0, 229, 255, 0.1)', color: 'var(--accent-cyan)' }}>
+            <Calendar size={20} />
+          </div>
         </Link>
 
-        <Link to="/admin/registrations" className="card-mono stat-card" style={{ textDecoration: 'none' }}>
+        <Link to="/admin/registrations" className="card-mono stat-card transition-all" style={{ textDecoration: 'none', position: 'relative', overflow: 'hidden', borderLeft: '3px solid var(--accent-amber)' }}>
           <div>
             <span className="label-eyebrow" style={{ fontSize: '0.65rem' }}>Registrations</span>
-            <p className="stat-number">{overview.totalRegistrations || 0}</p>
+            <p className="stat-number" style={{ color: '#FFFFFF' }}>{overview.totalRegistrations || 0}</p>
             <span className="text-dim block" style={{ fontSize: '0.7rem', marginTop: '0.375rem' }}>
               {overview.confirmedRegistrations || 0} Confirmed • {overview.checkedInRegistrations || 0} Checked-In
             </span>
           </div>
-          <Users size={20} className="text-muted" />
+          <div style={{ padding: '0.5rem', borderRadius: '8px', backgroundColor: 'rgba(245, 158, 11, 0.1)', color: 'var(--accent-amber)' }}>
+            <Users size={20} />
+          </div>
         </Link>
 
-        <div className="card-mono stat-card">
+        <div className="card-mono stat-card transition-all" style={{ position: 'relative', overflow: 'hidden', borderLeft: '3px solid var(--accent-emerald)' }}>
           <div>
             <span className="label-eyebrow" style={{ fontSize: '0.65rem' }}>Total Revenue</span>
-            <p className="stat-number">₹{overview.totalRevenue?.toLocaleString('en-IN') || 0}</p>
+            <p className="stat-number" style={{ color: 'var(--accent-emerald)' }}>₹{overview.totalRevenue?.toLocaleString('en-IN') || 0}</p>
             <span className="text-dim block" style={{ fontSize: '0.7rem', marginTop: '0.375rem' }}>
               Verified Payments
             </span>
           </div>
-          <IndianRupee size={20} className="text-muted" />
+          <div style={{ padding: '0.5rem', borderRadius: '8px', backgroundColor: 'rgba(16, 185, 129, 0.1)', color: 'var(--accent-emerald)' }}>
+            <IndianRupee size={20} />
+          </div>
         </div>
 
-        <Link to="/admin/registrations?status=CHECKED_IN" className="card-mono stat-card" style={{ textDecoration: 'none' }}>
+        <Link to="/admin/registrations?status=CHECKED_IN" className="card-mono stat-card transition-all" style={{ textDecoration: 'none', position: 'relative', overflow: 'hidden', borderLeft: '3px solid var(--accent-purple, #a855f7)' }}>
           <div>
             <span className="label-eyebrow" style={{ fontSize: '0.65rem' }}>Check-in Rate</span>
-            <p className="stat-number">
+            <p className="stat-number" style={{ color: '#FFFFFF' }}>
               {(overview.confirmedRegistrations || 0) + (overview.checkedInRegistrations || 0) > 0 
                 ? Math.round(((overview.checkedInRegistrations || 0) / ((overview.confirmedRegistrations || 0) + (overview.checkedInRegistrations || 0))) * 100) 
                 : 0}%
@@ -126,26 +137,28 @@ export default function AdminOverview() {
               Gate Conversion
             </span>
           </div>
-          <CheckSquare size={20} className="text-muted" />
+          <div style={{ padding: '0.5rem', borderRadius: '8px', backgroundColor: 'rgba(168, 85, 247, 0.1)', color: '#a855f7' }}>
+            <CheckSquare size={20} />
+          </div>
         </Link>
       </div>
 
       {/* Visual Analytics Charts */}
       {stats?.eventAnalytics?.length > 0 && (
-        <div className="card-mono" style={{ padding: '1.5rem' }}>
+        <div className="card-mono" style={{ padding: '1.5rem', backgroundColor: 'var(--bg-glass-card)', borderColor: 'var(--border-subtle)', borderRadius: '12px' }}>
           <div className="flex items-center justify-between" style={{ paddingBottom: '1rem', borderBottom: '1px solid var(--border-subtle)', marginBottom: '1.5rem' }}>
-            <h3 className="font-heading font-bold text-white uppercase flex items-center gap-xs" style={{ fontSize: '1rem' }}>
-              <BarChart3 size={16} /> Registration & Gate Performance
+            <h3 className="font-heading font-bold text-white uppercase flex items-center gap-xs" style={{ fontSize: '1rem', letterSpacing: '0.05em' }}>
+              <BarChart3 size={18} style={{ color: 'var(--accent-cyan)' }} /> Registration & Gate Performance
             </h3>
           </div>
           
-          <div style={{ height: '350px', width: '100%' }}>
+          <div style={{ height: '350px', width: '100%', overflowX: 'auto' }}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
                 data={stats.eventAnalytics.slice(0, 5)} // Show top 5 recent events
                 margin={{ top: 20, right: 30, left: 0, bottom: 5 }}
               >
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" vertical={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.07)" vertical={false} />
                 <XAxis 
                   dataKey="eventTitle" 
                   stroke="var(--text-muted)" 
@@ -162,8 +175,8 @@ export default function AdminOverview() {
                   dx={-10}
                 />
                 <Tooltip 
-                  cursor={{ fill: 'rgba(255,255,255,0.05)' }} 
-                  contentStyle={{ backgroundColor: 'var(--color-bg)', border: '1px solid var(--border-subtle)', borderRadius: '8px', color: '#fff' }}
+                  cursor={{ fill: 'rgba(255,255,255,0.03)' }} 
+                  contentStyle={{ backgroundColor: 'var(--color-black)', border: '1px solid var(--border-subtle)', borderRadius: '8px', color: '#fff' }}
                   itemStyle={{ fontSize: '13px', fontWeight: 600 }}
                 />
                 <Legend wrapperStyle={{ paddingTop: '20px', fontSize: '13px' }} />
@@ -177,15 +190,15 @@ export default function AdminOverview() {
       )}
 
       {/* Event Analytics */}
-      <div className="card-mono" style={{ padding: '1.5rem' }}>
+      <div className="card-mono" style={{ padding: '1.5rem', backgroundColor: 'var(--bg-glass-card)', borderColor: 'var(--border-subtle)', borderRadius: '12px' }}>
         <div className="flex items-center justify-between" style={{ paddingBottom: '1rem', borderBottom: '1px solid var(--border-subtle)', marginBottom: '1rem' }}>
-          <h3 className="font-heading font-bold text-white uppercase flex items-center gap-xs" style={{ fontSize: '1rem' }}>
-            <Activity size={16} /> Event Analytics Dashboard
+          <h3 className="font-heading font-bold text-white uppercase flex items-center gap-xs" style={{ fontSize: '1rem', letterSpacing: '0.05em' }}>
+            <Activity size={18} style={{ color: 'var(--accent-amber)' }} /> Event Analytics Dashboard
           </h3>
         </div>
 
         {stats?.eventAnalytics?.length > 0 ? (
-          <div className="table-container">
+          <div className="table-container" style={{ borderRadius: '8px' }}>
             <table className="data-table">
               <thead>
                 <tr>
@@ -206,7 +219,7 @@ export default function AdminOverview() {
                       <td className="font-bold text-white">{evt.eventTitle}</td>
                       <td className="text-muted">{new Date(evt.eventDate).toLocaleDateString()}</td>
                       <td className="font-mono text-white">{evt.totalRegistrations}</td>
-                      <td className="font-mono text-emerald">{evt.confirmedRegistrations}</td>
+                      <td className="font-mono text-amber">{evt.confirmedRegistrations}</td>
                       <td className="font-mono" style={{ color: 'var(--accent-cyan)' }}>{evt.checkedInRegistrations}</td>
                       <td>
                         <div className="flex items-center gap-2">
@@ -230,18 +243,18 @@ export default function AdminOverview() {
       </div>
 
       {/* Recent Registrations Table */}
-      <div className="card-mono" style={{ padding: '1.5rem' }}>
+      <div className="card-mono" style={{ padding: '1.5rem', backgroundColor: 'var(--bg-glass-card)', borderColor: 'var(--border-subtle)', borderRadius: '12px' }}>
         <div className="flex items-center justify-between" style={{ paddingBottom: '1rem', borderBottom: '1px solid var(--border-subtle)', marginBottom: '1rem' }}>
-          <h3 className="font-heading font-bold text-white uppercase flex items-center gap-xs" style={{ fontSize: '1rem' }}>
-            <Activity size={16} /> Recent Registrations Stream
+          <h3 className="font-heading font-bold text-white uppercase flex items-center gap-xs" style={{ fontSize: '1rem', letterSpacing: '0.05em' }}>
+            <Activity size={18} style={{ color: 'var(--accent-cyan)' }} /> Recent Registrations Stream
           </h3>
-          <Link to="/admin/registrations" className="nav-link" style={{ fontSize: '0.75rem' }}>
+          <Link to="/admin/registrations" className="nav-link" style={{ fontSize: '0.75rem', color: 'var(--accent-cyan)' }}>
             View Full Roster →
           </Link>
         </div>
 
         {stats?.recentRegistrations?.length > 0 ? (
-          <div className="table-container">
+          <div className="table-container" style={{ borderRadius: '8px' }}>
             <table className="data-table">
               <thead>
                 <tr>
