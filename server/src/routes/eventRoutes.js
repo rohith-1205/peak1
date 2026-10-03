@@ -8,6 +8,7 @@ router.get('/', optionalAuth, eventController.getEvents);
 router.get('/meta/categories', eventController.getEventCategories);
 router.get('/id/:id', authenticateUser, requireAdmin, eventController.getEventById);
 router.get('/:slug', eventController.getEventBySlug);
+router.get('/:slug/leaderboard', eventController.getLeaderboard);
 
 router.post('/', authenticateUser, requireAdmin, validate(createEventSchema), eventController.createEvent);
 router.put('/:id', authenticateUser, requireAdmin, eventController.updateEvent);

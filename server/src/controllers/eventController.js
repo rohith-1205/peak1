@@ -75,6 +75,15 @@ const getEventCategories = async (req, res, next) => {
   }
 };
 
+const getLeaderboard = async (req, res, next) => {
+  try {
+    const result = await eventService.getEventLeaderboard(req.params.slug);
+    return ApiResponse.success(res, result, 'Event leaderboard retrieved successfully');
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getEvents,
   getEventBySlug,
@@ -83,5 +92,6 @@ module.exports = {
   updateEvent,
   updateStatus,
   deleteEvent,
-  getEventCategories
+  getEventCategories,
+  getLeaderboard
 };

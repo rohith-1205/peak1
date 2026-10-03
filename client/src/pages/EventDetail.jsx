@@ -6,7 +6,7 @@ import { useToast } from '../context/ToastContext';
 import StatusBadge from '../components/StatusBadge';
 import { 
   Calendar, MapPin, ShieldAlert, FileText, CheckCircle2, 
-  ArrowLeft, Ticket, Gauge, X 
+  ArrowLeft, Ticket, Gauge, X, Trophy, Medal, Search, Flame, Award
 } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 
@@ -46,6 +46,11 @@ export default function EventDetail() {
     teamName: ''
   });
 
+  const [activeTab, setActiveTab] = useState('overview');
+  const [leaderboardData, setLeaderboardData] = useState([]);
+  const [loadingLeaderboard, setLoadingLeaderboard] = useState(false);
+  const [leaderboardSearch, setLeaderboardSearch] = useState('');
+
   useEffect(() => {
     const fetchEvent = async () => {
       try {
@@ -62,6 +67,26 @@ export default function EventDetail() {
 
     fetchEvent();
   }, [slug]);
+
+  useEffect(() => {
+    if (activeTab === 'leaderboard' || (event && event.hasLeaderboard)) {
+      const fetchLeaderboard = async () => {
+        setLoadingLeaderboard(true);
+        try {
+          const res = await api.get(`/events/${slug}/leaderboard`);
+          if (res.success && res.data?.leaderboard) {
+            setLeaderboardData(res.data.leaderboard);
+          }
+        } catch (err) {
+          console.error('Failed to load leaderboard:', err);
+        } finally {
+          setLoadingLeaderboard(false);
+        }
+      };
+
+      fetchLeaderboard();
+    }
+  }, [slug, activeTab, event?.hasLeaderboard]);
 
   if (loading) {
     return (
@@ -298,86 +323,291 @@ export default function EventDetail() {
         </div>
       </div>
 
-      {/* Body Grid */}
-      <div className="grid grid-3 gap-lg">
-        {/* Main Content */}
-        <div style={{ gridColumn: 'span 2' }} className="flex flex-col gap-lg">
-          <div className="card-mono" style={{ padding: '2rem' }}>
-            <h3 className="font-heading font-bold text-white uppercase flex items-center gap-xs" style={{ fontSize: '1.25rem', marginBottom: '1rem' }}>
-              <FileText size={20} /> Event Overview
-            </h3>
-            <p className="text-muted leading-relaxed whitespace-pre-line" style={{ fontSize: '0.875rem' }}>
-              {event.fullDescription}
-            </p>
-          </div>
+      {/* Navigation Tabs */}
+      <div className="flex items-center gap-2 border-b border-slate-800 my-6">
+        <button
+          onClick={() => setActiveTab('overview')}
+          className={`px-5 py-3 font-heading font-bold text-xs uppercase tracking-wider border-b-2 transition flex items-center gap-2 ${
+            activeTab === 'overview'
+              ? 'border-cyan-400 text-cyan-400 bg-cyan-950/20'
+              : 'border-transparent text-slate-400 hover:text-white'
+          }`}
+        >
+          <FileText size={15} /> Overview & Specs
+        </button>
 
-          {/* Technical Specs */}
-          {event.raceConfig && (event.raceConfig.vehicleType || event.raceConfig.distance) && (
+        <button
+          onClick={() => setActiveTab('leaderboard')}
+          className={`px-5 py-3 font-heading font-bold text-xs uppercase tracking-wider border-b-2 transition flex items-center gap-2 ${
+            activeTab === 'leaderboard'
+              ? 'border-amber-400 text-amber-400 bg-amber-950/20'
+              : 'border-transparent text-slate-400 hover:text-white'
+          }`}
+        >
+          <Trophy size={15} /> {event.leaderboardTitle || 'Official Standings'}
+          {leaderboardData.length > 0 && (
+            <span className="px-2 py-0.5 text-[10px] bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded-full font-mono">
+              {leaderboardData.length}
+            </span>
+          )}
+        </button>
+      </div>
+
+      {activeTab === 'overview' ? (
+        /* Body Grid Overview */
+        <div className="grid grid-3 gap-lg">
+          {/* Main Content */}
+          <div style={{ gridColumn: 'span 2' }} className="flex flex-col gap-lg">
             <div className="card-mono" style={{ padding: '2rem' }}>
               <h3 className="font-heading font-bold text-white uppercase flex items-center gap-xs" style={{ fontSize: '1.25rem', marginBottom: '1rem' }}>
-                <Gauge size={20} /> Technical & Race Parameters
+                <FileText size={20} /> Event Overview
               </h3>
-              <div className="grid grid-2 gap-md">
-                {event.raceConfig.vehicleType && (
-                  <div className="card-mono" style={{ padding: '1rem', backgroundColor: 'var(--color-black)' }}>
-                    <span className="label-eyebrow" style={{ fontSize: '0.65rem' }}>Vehicle / Discipline</span>
-                    <span className="font-bold text-white block mt-1" style={{ fontSize: '0.875rem' }}>{event.raceConfig.vehicleType}</span>
-                  </div>
-                )}
-                {event.raceConfig.distance && (
-                  <div className="card-mono" style={{ padding: '1rem', backgroundColor: 'var(--color-black)' }}>
-                    <span className="label-eyebrow" style={{ fontSize: '0.65rem' }}>Format / Distance</span>
-                    <span className="font-bold text-white block mt-1" style={{ fontSize: '0.875rem' }}>{event.raceConfig.distance}</span>
-                  </div>
-                )}
+              <p className="text-muted leading-relaxed whitespace-pre-line" style={{ fontSize: '0.875rem' }}>
+                {event.fullDescription}
+              </p>
+            </div>
+
+            {/* Technical Specs */}
+            {event.raceConfig && (event.raceConfig.vehicleType || event.raceConfig.distance) && (
+              <div className="card-mono" style={{ padding: '2rem' }}>
+                <h3 className="font-heading font-bold text-white uppercase flex items-center gap-xs" style={{ fontSize: '1.25rem', marginBottom: '1rem' }}>
+                  <Gauge size={20} /> Technical & Race Parameters
+                </h3>
+                <div className="grid grid-2 gap-md">
+                  {event.raceConfig.vehicleType && (
+                    <div className="card-mono" style={{ padding: '1rem', backgroundColor: 'var(--color-black)' }}>
+                      <span className="label-eyebrow" style={{ fontSize: '0.65rem' }}>Vehicle / Discipline</span>
+                      <span className="font-bold text-white block mt-1" style={{ fontSize: '0.875rem' }}>{event.raceConfig.vehicleType}</span>
+                    </div>
+                  )}
+                  {event.raceConfig.distance && (
+                    <div className="card-mono" style={{ padding: '1rem', backgroundColor: 'var(--color-black)' }}>
+                      <span className="label-eyebrow" style={{ fontSize: '0.65rem' }}>Format / Distance</span>
+                      <span className="font-bold text-white block mt-1" style={{ fontSize: '0.875rem' }}>{event.raceConfig.distance}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Rules */}
+            {event.rules && event.rules.length > 0 && (
+              <div className="card-mono" style={{ padding: '2rem' }}>
+                <h3 className="font-heading font-bold text-white uppercase flex items-center gap-xs" style={{ fontSize: '1.25rem', marginBottom: '1rem' }}>
+                  <ShieldAlert size={20} /> Regulations & Safety Rules
+                </h3>
+                <ul className="text-muted leading-relaxed" style={{ fontSize: '0.8125rem', paddingLeft: '1.25rem' }}>
+                  {event.rules.map((rule, idx) => (
+                    <li key={idx} style={{ marginBottom: '0.375rem' }}>{rule}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+
+          {/* Sidebar */}
+          <div className="flex flex-col gap-lg">
+            <div className="card-mono" style={{ padding: '1.5rem' }}>
+              <h4 className="font-heading font-bold text-white uppercase" style={{ fontSize: '0.875rem', marginBottom: '1rem', paddingBottom: '0.5rem', borderBottom: '1px solid var(--border-subtle)' }}>
+                Venue Location
+              </h4>
+              <div className="text-muted leading-relaxed" style={{ fontSize: '0.8125rem' }}>
+                <p className="font-bold text-white">{event.venue}</p>
+                <p>{event.address}</p>
+                <p>{event.city}, {event.state}, {event.country}</p>
               </div>
             </div>
-          )}
 
-          {/* Rules */}
-          {event.rules && event.rules.length > 0 && (
-            <div className="card-mono" style={{ padding: '2rem' }}>
-              <h3 className="font-heading font-bold text-white uppercase flex items-center gap-xs" style={{ fontSize: '1.25rem', marginBottom: '1rem' }}>
-                <ShieldAlert size={20} /> Regulations & Safety Rules
-              </h3>
-              <ul className="text-muted leading-relaxed" style={{ fontSize: '0.8125rem', paddingLeft: '1.25rem' }}>
-                {event.rules.map((rule, idx) => (
-                  <li key={idx} style={{ marginBottom: '0.375rem' }}>{rule}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-
-        {/* Sidebar */}
-        <div className="flex flex-col gap-lg">
-          <div className="card-mono" style={{ padding: '1.5rem' }}>
-            <h4 className="font-heading font-bold text-white uppercase" style={{ fontSize: '0.875rem', marginBottom: '1rem', paddingBottom: '0.5rem', borderBottom: '1px solid var(--border-subtle)' }}>
-              Venue Location
-            </h4>
-            <div className="text-muted leading-relaxed" style={{ fontSize: '0.8125rem' }}>
-              <p className="font-bold text-white">{event.venue}</p>
-              <p>{event.address}</p>
-              <p>{event.city}, {event.state}, {event.country}</p>
+            <div className="card-mono" style={{ padding: '1.5rem' }}>
+              <h4 className="font-heading font-bold text-white uppercase" style={{ fontSize: '0.875rem', marginBottom: '1rem', paddingBottom: '0.5rem', borderBottom: '1px solid var(--border-subtle)' }}>
+                Organizer Info
+              </h4>
+              <div className="flex items-center gap-md">
+                <div className="brand-badge" style={{ width: '2.5rem', height: '2.5rem', fontSize: '1rem' }}>
+                  {event.organizer?.name?.[0]}
+                </div>
+                <div>
+                  <p className="font-bold text-white" style={{ fontSize: '0.875rem' }}>{event.organizer?.name}</p>
+                  <p className="text-muted" style={{ fontSize: '0.75rem' }}>{event.organizer?.email}</p>
+                </div>
+              </div>
             </div>
           </div>
-
-          <div className="card-mono" style={{ padding: '1.5rem' }}>
-            <h4 className="font-heading font-bold text-white uppercase" style={{ fontSize: '0.875rem', marginBottom: '1rem', paddingBottom: '0.5rem', borderBottom: '1px solid var(--border-subtle)' }}>
-              Organizer Info
-            </h4>
-            <div className="flex items-center gap-md">
-              <div className="brand-badge" style={{ width: '2.5rem', height: '2.5rem', fontSize: '1rem' }}>
-                {event.organizer?.name?.[0]}
+        </div>
+      ) : (
+        /* Leaderboard Tab Content */
+        <div className="flex flex-col gap-lg">
+          {/* Header Banner */}
+          <div className="card-mono p-6 bg-gradient-to-r from-amber-950/40 via-slate-900 to-amber-900/30 border-amber-500/30 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 shrink-0">
+                <Trophy size={26} />
               </div>
               <div>
-                <p className="font-bold text-white" style={{ fontSize: '0.875rem' }}>{event.organizer?.name}</p>
-                <p className="text-muted" style={{ fontSize: '0.75rem' }}>{event.organizer?.email}</p>
+                <h3 className="text-lg font-heading font-bold text-white uppercase tracking-wider">
+                  {event.leaderboardTitle || 'Official Race Standings'}
+                </h3>
+                <p className="text-xs text-slate-300">
+                  Live timing, lap scores, and position rankings verified by Peak1 Gate Systems
+                </p>
               </div>
             </div>
+
+            {/* Search Filter */}
+            <div className="relative w-full md:w-64">
+              <Search size={14} className="text-dim absolute left-3 top-3" />
+              <input
+                type="text"
+                value={leaderboardSearch}
+                onChange={(e) => setLeaderboardSearch(e.target.value)}
+                placeholder="Search racer, vehicle, bib..."
+                className="form-input text-xs pl-9"
+              />
+            </div>
           </div>
+
+          {/* Top 3 Winner Podium */}
+          {leaderboardData.length >= 3 && !leaderboardSearch && (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 my-2 items-end">
+              {/* 2nd Place */}
+              <div className="card-mono p-5 text-center border-slate-700 bg-slate-900/60 flex flex-col items-center gap-2 order-2 md:order-1 transform hover:-translate-y-1 transition">
+                <div className="w-10 h-10 rounded-full bg-slate-700/50 border border-slate-400 text-slate-300 flex items-center justify-center font-bold text-sm">
+                  🥈 2nd
+                </div>
+                <h4 className="font-heading font-bold text-white text-base truncate w-full">
+                  {leaderboardData[1].participantName}
+                </h4>
+                <span className="text-xs font-mono text-cyan-400">
+                  {leaderboardData[1].vehicleModel || 'Participant'}
+                </span>
+                <div className="mt-2 px-3 py-1 bg-slate-800 rounded-lg text-xs font-mono font-bold text-slate-200">
+                  Score / Lap: {leaderboardData[1].leaderboardScore > 0 ? leaderboardData[1].leaderboardScore : 'Runner Up'}
+                </div>
+              </div>
+
+              {/* 1st Place (Gold Winner) */}
+              <div className="card-mono p-6 text-center border-amber-500/50 bg-gradient-to-b from-amber-950/60 to-slate-900 flex flex-col items-center gap-2 order-1 md:order-2 transform -translate-y-2 hover:-translate-y-3 transition shadow-xl shadow-amber-500/10">
+                <div className="w-12 h-12 rounded-full bg-amber-500/20 border-2 border-amber-400 text-amber-300 flex items-center justify-center font-bold text-base">
+                  🥇 1st
+                </div>
+                <span className="text-[10px] font-bold tracking-widest text-amber-400 uppercase">EVENT CHAMPION</span>
+                <h4 className="font-heading font-extrabold text-white text-lg truncate w-full">
+                  {leaderboardData[0].participantName}
+                </h4>
+                <span className="text-xs font-mono text-cyan-300">
+                  {leaderboardData[0].vehicleModel || 'Champion Racer'}
+                </span>
+                <div className="mt-2 px-4 py-1.5 bg-amber-500/20 border border-amber-500/40 rounded-xl text-sm font-mono font-black text-amber-300">
+                  Score / Time: {leaderboardData[0].leaderboardScore > 0 ? leaderboardData[0].leaderboardScore : 'Winner'}
+                </div>
+              </div>
+
+              {/* 3rd Place */}
+              <div className="card-mono p-5 text-center border-amber-900/40 bg-slate-900/60 flex flex-col items-center gap-2 order-3 hover:-translate-y-1 transition">
+                <div className="w-10 h-10 rounded-full bg-amber-900/30 border border-amber-700 text-amber-500 flex items-center justify-center font-bold text-sm">
+                  🥉 3rd
+                </div>
+                <h4 className="font-heading font-bold text-white text-base truncate w-full">
+                  {leaderboardData[2].participantName}
+                </h4>
+                <span className="text-xs font-mono text-cyan-400">
+                  {leaderboardData[2].vehicleModel || 'Participant'}
+                </span>
+                <div className="mt-2 px-3 py-1 bg-slate-800 rounded-lg text-xs font-mono font-bold text-slate-200">
+                  Score / Lap: {leaderboardData[2].leaderboardScore > 0 ? leaderboardData[2].leaderboardScore : '3rd Place'}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Standings Table */}
+          {loadingLeaderboard ? (
+            <div className="card-mono p-8 text-center text-slate-400 font-mono text-xs">
+              Loading Official Standings...
+            </div>
+          ) : (() => {
+            const filtered = leaderboardData.filter((item) => {
+              if (!leaderboardSearch) return true;
+              const q = leaderboardSearch.toLowerCase();
+              return (
+                item.participantName.toLowerCase().includes(q) ||
+                item.vehicleModel.toLowerCase().includes(q) ||
+                item.vehicleNumber.toLowerCase().includes(q) ||
+                item.registrationId.toLowerCase().includes(q) ||
+                item.teamName.toLowerCase().includes(q)
+              );
+            });
+
+            if (filtered.length === 0) {
+              return (
+                <div className="card-mono p-8 text-center flex flex-col items-center gap-2">
+                  <Flame size={28} className="text-amber-500/60" />
+                  <h4 className="text-white font-bold text-sm">No Standings Recorded Yet</h4>
+                  <p className="text-slate-400 text-xs max-w-sm">
+                    Live race times and scores will be updated here as participants check in and complete their laps.
+                  </p>
+                </div>
+              );
+            }
+
+            return (
+              <div className="table-container">
+                <table className="data-table">
+                  <thead>
+                    <tr>
+                      <th style={{ width: '80px' }}>Rank</th>
+                      <th>Participant Name</th>
+                      <th>Vehicle / Details</th>
+                      <th>Team / Squad</th>
+                      <th>Pass ID</th>
+                      <th style={{ textAlign: 'right' }}>Score / Time</th>
+                      <th style={{ textAlign: 'center' }}>Gate Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filtered.map((item, idx) => (
+                      <tr key={item.registrationId || idx}>
+                        <td className="font-mono font-bold">
+                          {item.leaderboardRank === 1 && <span className="text-amber-400">🥇 #1</span>}
+                          {item.leaderboardRank === 2 && <span className="text-slate-300">🥈 #2</span>}
+                          {item.leaderboardRank === 3 && <span className="text-amber-600">🥉 #3</span>}
+                          {item.leaderboardRank > 3 && `#${item.leaderboardRank}`}
+                        </td>
+                        <td>
+                          <span className="font-bold text-white block">{item.participantName}</span>
+                          {item.city && <span className="text-slate-400 text-[11px]">{item.city}</span>}
+                        </td>
+                        <td>
+                          <span className="font-mono text-cyan-300 text-xs block">{item.vehicleModel || '-'}</span>
+                          {item.vehicleNumber && <span className="text-slate-400 text-[10px] font-mono">{item.vehicleNumber}</span>}
+                        </td>
+                        <td className="text-slate-300 text-xs">{item.teamName || '-'}</td>
+                        <td className="font-mono text-xs text-slate-400">{item.registrationId}</td>
+                        <td className="font-mono font-bold text-white text-right">
+                          {item.leaderboardScore > 0 ? (
+                            <span className="px-2 py-1 bg-cyan-950 border border-cyan-800 text-cyan-300 rounded">
+                              {item.leaderboardScore}
+                            </span>
+                          ) : (
+                            <span className="text-slate-500">-</span>
+                          )}
+                        </td>
+                        <td style={{ textAlign: 'center' }}>
+                          {item.isCheckedIn ? (
+                            <span className="badge badge-emerald text-[10px]">Checked In</span>
+                          ) : (
+                            <span className="badge badge-amber text-[10px]">Registered</span>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            );
+          })()}
         </div>
-      </div>
+      )}
 
       {/* Registration Modal Dialog */}
       {isModalOpen && (

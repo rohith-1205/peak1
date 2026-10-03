@@ -1,4 +1,5 @@
 const Event = require('../models/Event');
+const Registration = require('../models/Registration');
 const AuditLog = require('../models/AuditLog');
 const { EVENT_STATUS } = require('../constants');
 const storageProvider = require('./storage/storageProvider');
@@ -286,6 +287,58 @@ const getEventCategories = async () => {
   return categories;
 };
 
+const getEventLeaderboard = async (slugOrId) => {
+  const isObjectId = typeof slugOrId === 'string' && slugOrId.match(/^[0-9a-fA-F]{24}$/);
+  const event = await Event.findOne({
+    $or: [
+      { slug: slugOrId },
+      ...(isObjectId ? [{ _id: slugOrId }] : [])
+    ]
+  });
+
+  if (!event) {
+    const error = new Error('Event not found');
+    error.statusCode = 404;
+    error.errorCode = 'EVENT_NOT_FOUND';
+    throw error;
+  }
+
+  // Retrieve confirmed or checked-in registrations
+  const registrations = await Registration.find({
+    eventId: event._id,
+    status: { $in: ['CONFIRMED', 'CHECKED_IN'] }
+  })
+    .select('registrationId participantDetails raceDetails leaderboardScore leaderboardRank checkInDetails createdAt')
+    .sort({ leaderboardRank: 1, leaderboardScore: -1, createdAt: 1 });
+
+  const leaderboard = registrations.map((reg, index) => ({
+    registrationId: reg.registrationId,
+    participantName: reg.participantDetails?.fullName || 'Anonymous Participant',
+    city: reg.participantDetails?.city || '',
+    vehicleModel: reg.raceDetails?.vehicleModel || '',
+    vehicleNumber: reg.raceDetails?.vehicleNumber || '',
+    teamName: reg.raceDetails?.teamName || '',
+    categoryClass: reg.raceDetails?.categoryClass || '',
+    leaderboardScore: reg.leaderboardScore || 0,
+    leaderboardRank: reg.leaderboardRank || (index + 1),
+    isCheckedIn: !!reg.checkInDetails?.isCheckedIn,
+    checkInTime: reg.checkInDetails?.checkInTime || null
+  }));
+
+  return {
+    event: {
+      _id: event._id,
+      title: event.title,
+      slug: event.slug,
+      category: event.category,
+      eventDate: event.eventDate,
+      hasLeaderboard: event.hasLeaderboard,
+      leaderboardTitle: event.leaderboardTitle || 'Official Standings'
+    },
+    leaderboard
+  };
+};
+
 module.exports = {
   getEvents,
   getEventBySlug,
@@ -295,6 +348,7 @@ module.exports = {
   deleteEvent,
   updateEventStatus,
   archiveEvent,
-  getEventCategories
+  getEventCategories,
+  getEventLeaderboard
 };
 

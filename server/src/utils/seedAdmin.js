@@ -7,10 +7,9 @@
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const path = require('path');
+const env = require('../config/env');
 const User = require('../models/User');
 const { ROLES } = require('../constants');
-
-dotenv.config({ path: path.join(__dirname, '../../.env') });
 
 const seedAdmin = async () => {
   try {
@@ -20,7 +19,7 @@ const seedAdmin = async () => {
     }
 
     const email = env.ADMIN_EMAIL ? env.ADMIN_EMAIL.toLowerCase().trim() : '';
-    const password = process.env.SEED_ADMIN_PASSWORD ? process.env.SEED_ADMIN_PASSWORD.trim() : '';
+    const password = (process.env.SEED_ADMIN_PASSWORD || env.ADMIN_PASSWORD || '').trim();
 
     if (!email) {
       console.error('[SeedAdmin Error]: ADMIN_EMAIL environment variable is required.');

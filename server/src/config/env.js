@@ -31,6 +31,7 @@ const env = {
   EMAIL_PORT: process.env.EMAIL_PORT || 587,
   EMAIL_USER: process.env.EMAIL_USER,
   EMAIL_PASS: process.env.EMAIL_PASS,
+  WEB3FORMS_ACCESS_KEY: process.env.WEB3FORMS_ACCESS_KEY || 'b89561b0-0eee-43b1-87f5-b23a217eb881',
 
   // Payments
   PAYMENT_PROVIDER: process.env.PAYMENT_PROVIDER || 'RAZORPAY',
@@ -66,13 +67,10 @@ const validateEnv = () => {
   if (env.NODE_ENV === 'production') {
     if (!process.env.CLIENT_URL) missing.push('CLIENT_URL');
     if (!env.QR_SIGNING_SECRET) missing.push('QR_SIGNING_SECRET');
-    if (!env.EMAIL_HOST) missing.push('EMAIL_HOST');
-    if (!process.env.EMAIL_PORT) missing.push('EMAIL_PORT');
-    if (!env.EMAIL_USER) missing.push('EMAIL_USER');
-    if (!env.EMAIL_PASS) missing.push('EMAIL_PASS');
+    if (!env.WEB3FORMS_ACCESS_KEY && !env.EMAIL_HOST) missing.push('WEB3FORMS_ACCESS_KEY or EMAIL_HOST');
 
     if (env.STORAGE_PROVIDER === 'local') {
-      console.warn('⚠️ WARNING: STORAGE_PROVIDER is "local" in production. Uploaded files will be lost on restart.');
+      console.warn('⚠️ WARNING: STORAGE_PROVIDER is "local" in production. Uploaded files will be stored in public/uploads.');
     }
   }
 
