@@ -4,6 +4,7 @@ import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import EventCard from '../components/EventCard';
 import { Calendar, ShieldCheck, Ticket, CheckCircle2, ArrowRight, Layers, Lock } from 'lucide-react';
+import peak11Banner from '../assets/peak11.jpeg';
 import './Home.css';
 
 export default function Home() {
@@ -73,6 +74,48 @@ export default function Home() {
             <Link to="/about" className="btn btn-secondary btn-lg">
               Platform Architecture
             </Link>
+          </div>
+
+          {/* Peak1 Club Showcase Banner */}
+          <div 
+            className="card-mono w-full overflow-hidden transition-all" 
+            style={{ 
+              marginTop: '2.5rem', 
+              borderRadius: '16px', 
+              border: '1px solid var(--border-subtle)', 
+              position: 'relative',
+              boxShadow: '0 20px 40px rgba(0,0,0,0.6)',
+              backgroundColor: 'var(--color-black)'
+            }}
+          >
+            <div style={{ position: 'relative', width: '100%', maxHeight: '520px', overflow: 'hidden' }}>
+              <img 
+                src={peak11Banner} 
+                alt="Peak1 Club Community" 
+                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+              />
+              <div 
+                style={{ 
+                  position: 'absolute', 
+                  bottom: '1.25rem', 
+                  right: '1.25rem', 
+                  backgroundColor: 'rgba(0, 0, 0, 0.8)', 
+                  backdropFilter: 'blur(10px)',
+                  border: '1px solid var(--border-subtle)',
+                  padding: '0.4rem 1rem',
+                  borderRadius: '30px',
+                  fontSize: '0.8125rem',
+                  fontWeight: 700,
+                  color: 'var(--accent-cyan)',
+                  letterSpacing: '0.05em',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.35rem'
+                }}
+              >
+                <span>@peak1club</span>
+              </div>
+            </div>
           </div>
         </div>
       </section>
