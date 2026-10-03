@@ -71,7 +71,8 @@ export default function AdminGatePage() {
 
   // Real-time WebSocket Updates
   useEffect(() => {
-    const socket = io(import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:5000');
+    const serverUrl = (import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || 'http://localhost:5000').replace('/api/v1', '');
+    const socket = io(serverUrl);
     
     socket.on('checkInUpdated', (data) => {
       // If the event matches what the current gate is scanning (or if "All Events" is selected)

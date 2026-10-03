@@ -30,7 +30,8 @@ export default function AdminOverview() {
   useEffect(() => {
     fetchStats();
 
-    const socket = io(import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:5000');
+    const serverUrl = (import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || 'http://localhost:5000').replace('/api/v1', '');
+    const socket = io(serverUrl);
     
     socket.on('checkInUpdated', () => {
       // Re-fetch stats when a check-in event happens globally
