@@ -71,7 +71,7 @@ export default function Footer() {
                 <Instagram size={14} /> @peak1club Instagram
               </a>
               <a
-                href="mailto:support@peak1.app"
+                href="mailto:peak1clubb@gmail.com"
                 className="btn btn-ghost btn-sm text-dim flex items-center gap-xs"
                 style={{ width: 'fit-content', fontSize: '0.75rem' }}
               >
