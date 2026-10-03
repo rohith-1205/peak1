@@ -295,21 +295,20 @@ export default function AdminRegistrations() {
                         >
                           <Eye size={14} /> Details
                         </button>
-                        {reg.eventId?.hasLeaderboard && (
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setRegForLeaderboard(reg);
-                              setLeaderboardScore(reg.leaderboardScore !== undefined && reg.leaderboardScore !== null ? String(reg.leaderboardScore) : '');
-                              setLeaderboardRank(reg.leaderboardRank !== undefined && reg.leaderboardRank !== null ? String(reg.leaderboardRank) : '');
-                              setLeaderboardModalOpen(true);
-                            }}
-                            className="btn btn-secondary btn-sm"
-                            title="Edit Leaderboard"
-                          >
-                            <Award size={14} /> Leaderboard
-                          </button>
-                        )}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setRegForLeaderboard(reg);
+                            setLeaderboardScore(reg.leaderboardScore !== undefined && reg.leaderboardScore !== null ? String(reg.leaderboardScore) : '');
+                            setLeaderboardRank(reg.leaderboardRank !== undefined && reg.leaderboardRank !== null ? String(reg.leaderboardRank) : '');
+                            setLeaderboardModalOpen(true);
+                          }}
+                          className="btn btn-secondary btn-sm"
+                          style={{ color: 'var(--accent-amber)', borderColor: 'rgba(245, 158, 11, 0.4)' }}
+                          title="Edit Rank & Score for Leaderboard"
+                        >
+                          <Award size={14} /> Leaderboard
+                        </button>
                         <button
                           type="button"
                           onClick={() => confirmDeleteRegistration(reg)}
@@ -538,19 +537,36 @@ export default function AdminRegistrations() {
             </button>
 
             <div className="text-left">
-              <span className="label-eyebrow">LEADERBOARD DETAILS</span>
+              <span className="label-eyebrow" style={{ color: 'var(--accent-amber)' }}>LEADERBOARD TIMING CONSOLE</span>
               <h3 className="section-title" style={{ marginTop: '0.25rem' }}>
-                {regForLeaderboard.eventId?.leaderboardTitle || 'Leaderboard'}
+                {regForLeaderboard.eventId?.leaderboardTitle || 'Official Standings'}
               </h3>
-              <p className="text-muted" style={{ fontSize: '0.75rem' }}>Update rank/score for {regForLeaderboard.participantDetails?.fullName}</p>
+              <p className="text-muted" style={{ fontSize: '0.75rem' }}>Event: {regForLeaderboard.eventId?.title}</p>
             </div>
 
-            <form onSubmit={handleUpdateLeaderboard} className="flex flex-col gap-md mt-4">
+            <div className="card-mono p-3 font-mono flex flex-col gap-xs text-xs" style={{ backgroundColor: 'var(--color-black)', borderLeft: '3px solid var(--accent-amber)' }}>
+              <div className="flex justify-between">
+                <span className="text-muted">PARTICIPANT:</span>
+                <span className="font-bold text-white">{regForLeaderboard.participantDetails?.fullName}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted">PASS ID:</span>
+                <span className="text-cyan-400">{regForLeaderboard.registrationId}</span>
+              </div>
+              {regForLeaderboard.raceDetails?.vehicleModel && (
+                <div className="flex justify-between">
+                  <span className="text-muted">VEHICLE / CLASS:</span>
+                  <span className="text-amber-300">{regForLeaderboard.raceDetails.vehicleModel} ({regForLeaderboard.raceDetails.vehicleNumber || 'No Bib'})</span>
+                </div>
+              )}
+            </div>
+
+            <form onSubmit={handleUpdateLeaderboard} className="flex flex-col gap-md">
               <div className="form-group">
-                <label className="form-label">Rank / Position</label>
+                <label className="form-label">Leaderboard Rank / Position (#1, #2...)</label>
                 <input
                   type="number"
-                  placeholder="e.g. 1"
+                  placeholder="e.g. 1 (Leave blank to remove from podium)"
                   value={leaderboardRank}
                   onChange={(e) => setLeaderboardRank(e.target.value)}
                   className="form-input"
@@ -558,7 +574,7 @@ export default function AdminRegistrations() {
               </div>
 
               <div className="form-group">
-                <label className="form-label">Score / Points</label>
+                <label className="form-label">Official Score / Timing (Points / Seconds)</label>
                 <input
                   type="number"
                   placeholder="e.g. 150"
@@ -568,20 +584,21 @@ export default function AdminRegistrations() {
                 />
               </div>
 
-              <div className="flex justify-end gap-sm" style={{ marginTop: '1rem' }}>
+              <div className="flex justify-end gap-sm" style={{ marginTop: '0.5rem' }}>
                 <button
                   type="button"
                   onClick={() => setLeaderboardModalOpen(false)}
-                  className="btn btn-secondary"
+                  className="btn btn-secondary btn-sm"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={updatingLeaderboard}
-                  className="btn btn-primary"
+                  className="btn btn-primary btn-sm"
+                  style={{ backgroundColor: 'var(--accent-amber)', borderColor: 'var(--accent-amber)', color: '#000000' }}
                 >
-                  {updatingLeaderboard ? 'Saving...' : 'Save Details'}
+                  {updatingLeaderboard ? 'Saving...' : 'Save Leaderboard Rank'}
                 </button>
               </div>
             </form>
