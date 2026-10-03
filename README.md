@@ -1,7 +1,7 @@
 # Peak1 — Event Registration & Race Management Platform
 
 ![Peak1 Banner](https://img.shields.io/badge/Platform-Peak1-orange?style=for-the-badge)
-![MERN Stack](https://img.shields.io/badge/Stack-MERN-blue?style=for-the-badge)
+![MERN STACK](https://img.shields.io/badge/Stack-MERN-blue?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
 **Peak1** is an enterprise-grade, high-performance Event Registration and Race Management SaaS platform built using the MERN stack (MongoDB, Express.js, React 18, Node.js) with Vite, Socket.IO real-time sync, dynamic form builders, JWT authentication, and Razorpay payment abstraction.
