@@ -10,6 +10,8 @@ import {
 } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 
+import { getImageUrl } from '../utils/imageUrl';
+
 export default function EventDetail() {
   const { slug } = useParams();
   const navigate = useNavigate();
@@ -258,7 +260,7 @@ export default function EventDetail() {
           {/* Poster */}
           <div style={{ position: 'relative', width: '100%', aspectRatio: '16/10', backgroundColor: 'var(--color-black)' }}>
             <img
-              src={event.posterUrl || 'https://images.unsplash.com/photo-1511919884226-fd3cad34687c?auto=format&fit=crop&q=80&w=800'}
+              src={getImageUrl(event.posterUrl) || 'https://images.unsplash.com/photo-1511919884226-fd3cad34687c?auto=format&fit=crop&q=80&w=800'}
               alt={event.title}
               style={{ width: '100%', height: '100%', objectFit: 'cover' }}
             />

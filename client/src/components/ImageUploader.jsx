@@ -7,6 +7,7 @@
 import React, { useState, useRef } from 'react';
 import adminApi from '../services/adminApi';
 import { UploadCloud, X, RefreshCw, Link as LinkIcon, AlertCircle, CheckCircle2, Image as ImageIcon } from 'lucide-react';
+import { getImageUrl } from '../utils/imageUrl';
 
 export default function ImageUploader({ kind = 'poster', value, onChange }) {
   const fileInputRef = useRef(null);
@@ -154,7 +155,7 @@ export default function ImageUploader({ kind = 'poster', value, onChange }) {
             }}
           >
             <img
-              src={currentUrl}
+              src={getImageUrl(currentUrl)}
               alt={labelText}
               style={{ width: '100%', height: '100%', objectFit: 'cover' }}
             />

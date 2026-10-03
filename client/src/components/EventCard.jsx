@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Calendar, MapPin, ArrowRight } from 'lucide-react';
 import StatusBadge from './StatusBadge';
+import { getImageUrl } from '../utils/imageUrl';
 import './EventCard.css';
 
 export default function EventCard({ event }) {
@@ -18,7 +19,7 @@ export default function EventCard({ event }) {
       {/* Poster Image & Badges */}
       <div className="event-poster-wrapper">
         <img
-          src={event.posterUrl || defaultPoster}
+          src={getImageUrl(event.posterUrl) || defaultPoster}
           alt={event.title}
           className="event-poster-img"
         />
