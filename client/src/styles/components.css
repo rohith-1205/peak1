@@ -84,6 +84,18 @@
   border-radius: var(--radius-sm);
 }
 
+.btn-xs {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.7rem;
+  border-radius: var(--radius-sm);
+  gap: 0.25rem;
+}
+
+.btn-icon {
+  padding: 0.35rem;
+  border-radius: var(--radius-sm);
+}
+
 .btn-lg {
   padding: 0.875rem 2rem;
   font-size: 1rem;
@@ -207,31 +219,35 @@
   background-color: var(--color-card);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
+  -webkit-overflow-scrolling: touch;
 }
 
 .data-table {
   width: 100%;
   border-collapse: collapse;
   text-align: left;
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
 }
 
 .data-table th {
-  padding: 0.875rem 1.25rem;
+  padding: 0.625rem 0.75rem;
   font-family: var(--font-mono);
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-size: 0.6875rem;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--text-muted);
   border-bottom: 1px solid var(--border-subtle);
   background-color: var(--color-bg-alt);
+  white-space: nowrap;
+  vertical-align: middle;
 }
 
 .data-table td {
-  padding: 1rem 1.25rem;
+  padding: 0.625rem 0.75rem;
   border-bottom: 1px solid var(--border-subtle);
   color: var(--text-primary);
+  vertical-align: middle;
 }
 
 .data-table tr:last-child td {

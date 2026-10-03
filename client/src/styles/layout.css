@@ -98,6 +98,8 @@
 .justify-end { justify-content: flex-end; }
 
 .gap-xs { gap: 0.5rem; }
+.gap-2xs { gap: 0.35rem; }
+.gap-3xs { gap: 0.2rem; }
 .gap-sm { gap: 0.75rem; }
 .gap-md { gap: 1rem; }
 .gap-lg { gap: 1.5rem; }
@@ -108,3 +110,19 @@
 .text-center { text-align: center; }
 .text-left { text-align: left; }
 .text-right { text-align: right; }
+
+/* Display & Typography Utilities */
+.block { display: block !important; }
+.inline-block { display: inline-block !important; }
+.inline { display: inline !important; }
+.font-mono { font-family: var(--font-mono) !important; }
+.font-bold { font-weight: 700 !important; }
+.font-extrabold { font-weight: 800 !important; }
+.font-medium { font-weight: 500 !important; }
+.whitespace-nowrap { white-space: nowrap !important; }
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+

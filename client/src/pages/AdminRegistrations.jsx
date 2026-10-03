@@ -198,62 +198,66 @@ export default function AdminRegistrations() {
       </div>
 
       {/* Filter Bar */}
-      <div className="card-mono p-4 flex flex-col sm:flex-row gap-md">
-        <div style={{ position: 'relative', flex: 1 }}>
-          <Search size={14} className="text-dim" style={{ position: 'absolute', left: '0.75rem', top: '0.75rem' }} />
-          <input
-            type="text"
-            placeholder="Search Pass ID, Name, Email, Phone..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && fetchRegistrations()}
-            className="form-input"
-            style={{ paddingLeft: '2.25rem' }}
-          />
+      <div className="card-mono" style={{ padding: '0.75rem 1rem' }}>
+        <div className="flex flex-col md:flex-row gap-sm items-center justify-between">
+          <div style={{ position: 'relative', flex: 1, width: '100%' }}>
+            <Search size={14} className="text-dim" style={{ position: 'absolute', left: '0.75rem', top: '0.65rem' }} />
+            <input
+              type="text"
+              placeholder="Search Pass ID, Name, Email, Phone..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && fetchRegistrations()}
+              className="form-input"
+              style={{ paddingLeft: '2.25rem', paddingBlock: '0.45rem', fontSize: '0.8125rem' }}
+            />
+          </div>
+
+          <div className="flex flex-row gap-sm w-full md:w-auto" style={{ minWidth: '22rem' }}>
+            {/* Event Filter Selector */}
+            <select
+              value={eventFilter}
+              onChange={handleEventFilterChange}
+              className="form-select"
+              style={{ paddingBlock: '0.45rem', fontSize: '0.8125rem', flex: 1 }}
+            >
+              <option value="">All Events</option>
+              {eventsList.map((evt) => (
+                <option key={evt._id} value={evt._id}>
+                  {evt.title}
+                </option>
+              ))}
+            </select>
+
+            {/* Status Filter */}
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="form-select"
+              style={{ paddingBlock: '0.45rem', fontSize: '0.8125rem', flex: 1 }}
+            >
+              <option value="">All Statuses</option>
+              <option value="CONFIRMED">CONFIRMED</option>
+              <option value="CHECKED_IN">CHECKED IN</option>
+              <option value="PAYMENT_PENDING">PAYMENT PENDING</option>
+              <option value="CANCELLED">CANCELLED</option>
+            </select>
+          </div>
         </div>
-
-        {/* Event Filter Selector */}
-        <select
-          value={eventFilter}
-          onChange={handleEventFilterChange}
-          className="form-select"
-          style={{ width: 'auto', minWidth: '13rem' }}
-        >
-          <option value="">All Events</option>
-          {eventsList.map((evt) => (
-            <option key={evt._id} value={evt._id}>
-              {evt.title}
-            </option>
-          ))}
-        </select>
-
-        {/* Status Filter */}
-        <select
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
-          className="form-select"
-          style={{ width: 'auto', minWidth: '11rem' }}
-        >
-          <option value="">All Statuses</option>
-          <option value="CONFIRMED">CONFIRMED</option>
-          <option value="CHECKED_IN">CHECKED IN</option>
-          <option value="PAYMENT_PENDING">PAYMENT PENDING</option>
-          <option value="CANCELLED">CANCELLED</option>
-        </select>
       </div>
 
       {/* Table */}
-      <div className="card-mono" style={{ padding: '1rem' }}>
+      <div className="card-mono" style={{ padding: '0.5rem' }}>
         {loading ? (
-          <div className="text-center text-muted" style={{ padding: '2rem' }}>Loading roster...</div>
+          <div className="text-center text-muted" style={{ padding: '2.5rem' }}>Loading participant roster...</div>
         ) : registrations.length > 0 ? (
-          <div className="table-container">
+          <div className="table-container" style={{ border: 'none' }}>
             <table className="data-table">
               <thead>
                 <tr>
                   <th>Pass ID</th>
                   <th>Participant Name</th>
-                  <th>Event</th>
+                  <th>Event & Category</th>
                   <th>Contact</th>
                   <th>City</th>
                   <th>Status</th>
@@ -264,36 +268,57 @@ export default function AdminRegistrations() {
               <tbody>
                 {registrations.map((reg) => (
                   <tr key={reg._id}>
-                    <td className="font-mono font-bold text-white">{reg.registrationId}</td>
-                    <td className="font-bold text-white">{reg.participantDetails?.fullName}</td>
+                    <td className="font-mono font-bold text-white whitespace-nowrap">{reg.registrationId}</td>
+                    <td className="font-bold text-white whitespace-nowrap">{reg.participantDetails?.fullName}</td>
                     <td>
-                      <span className="block text-white" style={{ fontSize: '0.8125rem' }}>{reg.eventId?.title || 'N/A'}</span>
-                      <span className="label-eyebrow" style={{ fontSize: '0.65rem' }}>{reg.eventId?.category || ''}</span>
+                      <div className="flex flex-col gap-3xs">
+                        <span className="font-bold text-white" style={{ fontSize: '0.8125rem' }}>
+                          {reg.eventId?.title || 'N/A'}
+                        </span>
+                        {reg.eventId?.category && (
+                          <span 
+                            className="badge badge-amber font-mono" 
+                            style={{ fontSize: '0.6rem', width: 'fit-content', padding: '0.05rem 0.35rem' }}
+                          >
+                            {reg.eventId.category}
+                          </span>
+                        )}
+                      </div>
                     </td>
                     <td>
-                      <span className="block text-white" style={{ fontSize: '0.8125rem' }}>{reg.participantDetails?.email}</span>
-                      <span className="text-dim" style={{ fontSize: '0.7rem' }}>{reg.participantDetails?.phone}</span>
+                      <div className="flex flex-col gap-3xs">
+                        <span className="text-white font-medium" style={{ fontSize: '0.8125rem' }}>
+                          {reg.participantDetails?.email}
+                        </span>
+                        <span className="text-dim font-mono" style={{ fontSize: '0.725rem' }}>
+                          {reg.participantDetails?.phone}
+                        </span>
+                      </div>
                     </td>
-                    <td className="text-muted" style={{ fontSize: '0.8125rem' }}>{reg.participantDetails?.city || 'N/A'}</td>
-                    <td><StatusBadge status={reg.status} /></td>
-                    <td>
+                    <td className="text-muted whitespace-nowrap" style={{ fontSize: '0.8125rem' }}>
+                      {reg.participantDetails?.city || 'N/A'}
+                    </td>
+                    <td className="whitespace-nowrap">
+                      <StatusBadge status={reg.status} />
+                    </td>
+                    <td className="whitespace-nowrap">
                       {reg.checkInDetails?.isCheckedIn ? (
-                        <span className="badge badge-emerald">
-                          <CheckCircle2 size={12} /> Checked In
+                        <span className="badge badge-emerald" style={{ padding: '0.15rem 0.45rem', fontSize: '0.65rem' }}>
+                          <CheckCircle2 size={11} /> Checked In
                         </span>
                       ) : (
                         <span className="text-dim" style={{ fontSize: '0.75rem' }}>Pending Gate Entry</span>
                       )}
                     </td>
-                    <td style={{ textAlign: 'right' }}>
-                      <div className="flex items-center justify-end gap-xs">
+                    <td style={{ textAlign: 'right' }} className="whitespace-nowrap">
+                      <div className="flex items-center justify-end gap-2xs">
                         <button
                           type="button"
                           onClick={() => setSelectedReg(reg)}
-                          className="btn btn-secondary btn-sm"
+                          className="btn btn-secondary btn-xs"
                           title="View Full Participant Metadata"
                         >
-                          <Eye size={14} /> Details
+                          <Eye size={13} /> Details
                         </button>
                         <button
                           type="button"
@@ -303,20 +328,20 @@ export default function AdminRegistrations() {
                             setLeaderboardRank(reg.leaderboardRank !== undefined && reg.leaderboardRank !== null ? String(reg.leaderboardRank) : '');
                             setLeaderboardModalOpen(true);
                           }}
-                          className="btn btn-secondary btn-sm"
+                          className="btn btn-secondary btn-xs"
                           style={{ color: 'var(--accent-amber)', borderColor: 'rgba(245, 158, 11, 0.4)' }}
                           title="Edit Rank & Score for Leaderboard"
                         >
-                          <Award size={14} /> Leaderboard
+                          <Award size={13} /> Leaderboard
                         </button>
                         <button
                           type="button"
                           onClick={() => confirmDeleteRegistration(reg)}
-                          className="btn btn-ghost btn-sm"
+                          className="btn btn-ghost btn-xs"
                           style={{ color: 'var(--accent-rose)' }}
                           title="Delete Registration Record"
                         >
-                          <Trash2 size={14} />
+                          <Trash2 size={13} />
                         </button>
                       </div>
                     </td>
