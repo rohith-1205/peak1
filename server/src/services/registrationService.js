@@ -227,12 +227,11 @@ const initiateRegistration = async (eventId, userId, registrationData) => {
   }
 
   if (initialStatus === REGISTRATION_STATUS.CONFIRMED) {
-    try {
-      const { sendRegistrationEmail } = require('./emailService');
-      await sendRegistrationEmail(registration, event);
-    } catch (err) {
-      console.error('Failed to send free registration email:', err);
-    }
+    // Dispatch automated confirmation email in background to keep registration API response instant
+    const { sendRegistrationEmail } = require('./emailService');
+    sendRegistrationEmail(registration, event).catch((err) => {
+      console.error('Background free registration email warning:', err.message);
+    });
   }
 
   return {

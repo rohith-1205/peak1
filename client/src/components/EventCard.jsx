@@ -1,11 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Calendar, MapPin, ArrowRight } from 'lucide-react';
+import { Calendar, MapPin, ArrowRight, CheckCircle2 } from 'lucide-react';
 import StatusBadge from './StatusBadge';
 import { getImageUrl } from '../utils/imageUrl';
+import { useAuth } from '../context/AuthContext';
 import './EventCard.css';
 
 export default function EventCard({ event }) {
+  const { isRegisteredForEvent } = useAuth();
+  const isRegistered = isRegisteredForEvent(event._id);
+
   const defaultPoster = 'https://images.unsplash.com/photo-1511919884226-fd3cad34687c?auto=format&fit=crop&q=80&w=800';
 
   const formattedDate = new Date(event.eventDate).toLocaleDateString('en-US', {
@@ -33,7 +37,13 @@ export default function EventCard({ event }) {
         </div>
 
         <div className="poster-tag-right">
-          <StatusBadge status={event.status} />
+          {isRegistered ? (
+            <span className="badge badge-emerald flex items-center gap-xs">
+              <CheckCircle2 size={12} /> REGISTERED
+            </span>
+          ) : (
+            <StatusBadge status={event.status} />
+          )}
         </div>
 
         {/* Pricing Badge */}
@@ -75,13 +85,26 @@ export default function EventCard({ event }) {
 
         {/* Action Button */}
         <div style={{ paddingTop: '0.25rem' }}>
-          <Link
-            to={`/events/${event.slug}`}
-            className="btn btn-secondary btn-sm w-full flex-between"
-          >
-            <span>View Details & Register</span>
-            <ArrowRight size={14} />
-          </Link>
+          {isRegistered ? (
+            <Link
+              to="/dashboard"
+              className="btn btn-secondary btn-sm w-full flex-between"
+              style={{ backgroundColor: 'rgba(16, 185, 129, 0.15)', borderColor: 'var(--accent-emerald)', color: '#34d399' }}
+            >
+              <span className="flex items-center gap-xs font-bold">
+                <CheckCircle2 size={14} /> Registered • View Pass
+              </span>
+              <ArrowRight size={14} />
+            </Link>
+          ) : (
+            <Link
+              to={`/events/${event.slug}`}
+              className="btn btn-secondary btn-sm w-full flex-between"
+            >
+              <span>View Details & Register</span>
+              <ArrowRight size={14} />
+            </Link>
+          )}
         </div>
       </div>
     </div>

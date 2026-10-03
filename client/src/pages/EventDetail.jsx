@@ -15,8 +15,10 @@ import { getImageUrl } from '../utils/imageUrl';
 export default function EventDetail() {
   const { slug } = useParams();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, isRegisteredForEvent, fetchUserRegistrations } = useAuth();
   const { showToast } = useToast();
+
+  const isAlreadyRegistered = isRegisteredForEvent(event?._id);
 
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -155,6 +157,9 @@ export default function EventDetail() {
       if (!requiresPayment) {
         setConfirmedRegistration(registration);
         showToast('Registration Confirmed Successfully!', 'success');
+        if (fetchUserRegistrations) {
+          fetchUserRegistrations().catch((e) => console.error(e));
+        }
         setSubmitting(false);
         return;
       }
@@ -270,8 +275,13 @@ export default function EventDetail() {
           <div style={{ padding: '2rem', gridColumn: 'span 2', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '1.5rem' }}>
             <div className="flex flex-col gap-sm">
               <div className="flex items-center gap-xs">
-                <span className="badge">{event.category}</span>
-                <StatusBadge status={event.status} />
+                {isAlreadyRegistered ? (
+                  <span className="badge badge-emerald flex items-center gap-xs">
+                    <CheckCircle2 size={12} /> REGISTERED
+                  </span>
+                ) : (
+                  <StatusBadge status={event.status} />
+                )}
               </div>
 
               <h1 className="page-title">{event.title}</h1>
@@ -308,18 +318,29 @@ export default function EventDetail() {
             </div>
 
             {/* Action Row */}
-            <div className="flex items-center justify-between gap-md">
+            <div className="flex items-center justify-between gap-md flex-wrap">
               <span className="text-muted" style={{ fontSize: '0.75rem' }}>
                 Organizer: <strong className="text-white">{event.organizer?.name}</strong>
               </span>
 
-              <button
-                onClick={handleRegisterClick}
-                disabled={event.status !== 'PUBLISHED'}
-                className="btn btn-primary btn-md"
-              >
-                {event.status === 'PUBLISHED' ? 'Register Now' : 'Registration Closed'}
-              </button>
+              {isAlreadyRegistered ? (
+                <div className="flex items-center gap-xs flex-wrap">
+                  <span className="badge badge-emerald flex items-center gap-xs" style={{ padding: '0.5rem 0.875rem', fontSize: '0.75rem' }}>
+                    <CheckCircle2 size={14} /> YOU ARE REGISTERED
+                  </span>
+                  <button onClick={() => navigate('/dashboard')} className="btn btn-primary btn-md flex items-center gap-xs">
+                    <Ticket size={16} /> View Pass in Dashboard
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={handleRegisterClick}
+                  disabled={event.status !== 'PUBLISHED'}
+                  className="btn btn-primary btn-md"
+                >
+                  {event.status === 'PUBLISHED' ? 'Register Now' : 'Registration Closed'}
+                </button>
+              )}
             </div>
           </div>
         </div>
