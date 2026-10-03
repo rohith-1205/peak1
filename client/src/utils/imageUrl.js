@@ -9,9 +9,12 @@ export const getImageUrl = (url) => {
     return '';
   }
 
+  // Strip hardcoded localhost origins if present from previous local uploads
+  let cleanUrl = url.replace(/^http:\/\/localhost:\d+/, '');
+
   // If already an absolute URL (e.g. Unsplash, Cloudinary, http/https/data)
-  if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) {
-    return url;
+  if (cleanUrl.startsWith('http://') || cleanUrl.startsWith('https://') || cleanUrl.startsWith('data:')) {
+    return cleanUrl;
   }
 
   // Derive backend base domain from VITE_API_BASE_URL (removing /api/v1)

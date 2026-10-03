@@ -30,10 +30,9 @@ const upload = async (buffer, options = {}) => {
 
   const publicId = `local_events_${kind}_${filename}`;
   const relativeUrl = `/uploads/events/${kind}/${filename}`;
-  const fullUrl = `${env.SERVER_URL}${relativeUrl}`;
 
   return {
-    url: fullUrl,
+    url: relativeUrl,
     publicId,
     width: options.width || 0,
     height: options.height || 0,

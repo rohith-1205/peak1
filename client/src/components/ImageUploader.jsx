@@ -128,18 +128,28 @@ export default function ImageUploader({ kind = 'poster', value, onChange }) {
 
       {/* Manual URL Input Fallback Mode */}
       {manualUrlMode ? (
-        <form onSubmit={handleManualUrlSave} className="flex gap-sm">
+        <div className="flex gap-sm">
           <input
             type="url"
             placeholder="https://images.unsplash.com/..."
             value={manualUrlInput}
             onChange={(e) => setManualUrlInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                handleManualUrlSave(e);
+              }
+            }}
             className="form-input flex-1"
           />
-          <button type="submit" className="btn btn-secondary btn-sm">
+          <button
+            type="button"
+            onClick={handleManualUrlSave}
+            className="btn btn-secondary btn-sm"
+          >
             Save URL
           </button>
-        </form>
+        </div>
       ) : currentUrl ? (
         /* Image Preview & Controls */
         <div className="card-mono flex flex-col gap-sm p-3" style={{ backgroundColor: 'var(--color-black)', borderColor: 'var(--border-subtle)' }}>
