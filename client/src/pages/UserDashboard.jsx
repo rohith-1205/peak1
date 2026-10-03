@@ -36,7 +36,7 @@ export default function UserDashboard() {
   const completionPercentage = Math.round((filledCount / profileFields.length) * 100);
 
   return (
-    <div className="container page-wrapper" style={{ paddingTop: '2.5rem' }}>
+    <div className="container page-wrapper" style={{ paddingTop: '2rem' }}>
       {/* Complete Your Profile Banner */}
       {showProfileBanner && completionPercentage < 100 && (
         <div
@@ -89,7 +89,7 @@ export default function UserDashboard() {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex items-center gap-xs" style={{ shrink: 0 }}>
+          <div className="flex items-center gap-xs" style={{ flexShrink: 0 }}>
             <Link
               to="/profile"
               className="btn btn-primary btn-sm"
@@ -111,36 +111,64 @@ export default function UserDashboard() {
       )}
 
       {/* Header Profile Section */}
-      <div className="card-mono" style={{ padding: '1.25rem 1.5rem' }}>
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-md">
-          <div className="flex items-start sm:items-center gap-md flex-wrap w-full sm:w-auto">
-            <div className="brand-badge shrink-0" style={{ width: '3rem', height: '3rem', fontSize: '1.25rem', minWidth: '3rem', minHeight: '3rem' }}>
+      <div 
+        className="card-mono" 
+        style={{ 
+          padding: '1.5rem', 
+          background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(8, 51, 68, 0.35), rgba(15, 23, 42, 0.95))',
+          border: '1px solid var(--border-subtle)',
+          borderRadius: '16px'
+        }}
+      >
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-md">
+          <div className="flex items-center gap-md flex-wrap w-full md:w-auto">
+            <div 
+              className="brand-badge shrink-0" 
+              style={{ 
+                width: '3.5rem', 
+                height: '3.5rem', 
+                fontSize: '1.5rem', 
+                minWidth: '3.5rem', 
+                minHeight: '3.5rem',
+                background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.4), var(--color-black))',
+                border: '2px solid rgba(6, 182, 212, 0.5)',
+                color: '#FFFFFF',
+                boxShadow: '0 0 20px rgba(6, 182, 212, 0.2)'
+              }}
+            >
               {user?.name?.[0]}
             </div>
             <div className="flex flex-col gap-xs flex-1" style={{ minWidth: 0 }}>
               <div className="flex items-center gap-xs flex-wrap">
-                <h1 className="section-title truncate" style={{ fontSize: '1.25rem' }}>{user?.name}</h1>
-                <Link to="/profile" className="btn btn-secondary btn-xs flex items-center gap-xs" style={{ fontSize: '0.6875rem', padding: '0.2rem 0.5rem', whiteSpace: 'nowrap' }}>
+                <h1 className="section-title truncate" style={{ fontSize: '1.35rem' }}>{user?.name}</h1>
+                <Link 
+                  to="/profile" 
+                  className="btn btn-secondary btn-xs flex items-center gap-xs" 
+                  style={{ fontSize: '0.6875rem', padding: '0.2rem 0.6rem', whiteSpace: 'nowrap' }}
+                >
                   <UserCheck size={12} /> Edit Profile ({completionPercentage}%)
                 </Link>
-                <span className="badge" style={{ fontSize: '0.65rem' }}>{user?.role}</span>
+                <span className="badge badge-emerald" style={{ fontSize: '0.65rem' }}>{user?.role}</span>
               </div>
-              <div className="flex items-center gap-sm text-muted flex-wrap" style={{ fontSize: '0.75rem' }}>
-                <span className="flex items-center gap-xs truncate"><Mail size={12} className="shrink-0" /> {user?.email}</span>
-                {user?.phone && <span className="flex items-center gap-xs truncate"><Phone size={12} className="shrink-0" /> {user?.phone}</span>}
+              <div className="flex items-center gap-md text-muted flex-wrap" style={{ fontSize: '0.75rem', marginTop: '0.1rem' }}>
+                <span className="flex items-center gap-xs truncate text-white"><Mail size={13} className="text-dim shrink-0" /> {user?.email}</span>
+                {user?.phone && <span className="flex items-center gap-xs truncate text-white"><Phone size={13} className="text-dim shrink-0" /> {user?.phone}</span>}
               </div>
             </div>
           </div>
 
-          <div className="flex items-center justify-around sm:justify-end gap-lg w-full sm:w-auto pt-3 sm:pt-0" style={{ borderTop: '1px solid var(--border-subtle)' }}>
-            <div className="text-center">
-              <span className="font-heading font-black text-white block" style={{ fontSize: '1.25rem' }}>
+          <div 
+            className="flex items-center justify-around md:justify-end gap-lg w-full md:w-auto pt-3 md:pt-0" 
+            style={{ borderTop: '1px solid var(--border-subtle)', mdBorderTop: 'none' }}
+          >
+            <div className="card-mono text-center" style={{ padding: '0.625rem 1.25rem', backgroundColor: 'rgba(255,255,255,0.02)', border: '1px solid var(--border-subtle)' }}>
+              <span className="font-heading font-black text-white block" style={{ fontSize: '1.35rem' }}>
                 {registrations.length}
               </span>
               <span className="label-eyebrow" style={{ fontSize: '0.65rem' }}>Registered Passes</span>
             </div>
-            <div className="text-center">
-              <span className="font-heading font-black text-white block" style={{ fontSize: '1.25rem' }}>
+            <div className="card-mono text-center" style={{ padding: '0.625rem 1.25rem', backgroundColor: 'rgba(255,255,255,0.02)', border: '1px solid var(--border-subtle)' }}>
+              <span className="font-heading font-black text-white block" style={{ fontSize: '1.35rem', color: 'var(--accent-emerald)' }}>
                 {registrations.filter(r => r.status === 'CONFIRMED' || r.status === 'CHECKED_IN').length}
               </span>
               <span className="label-eyebrow" style={{ fontSize: '0.65rem' }}>Confirmed</span>
@@ -152,8 +180,8 @@ export default function UserDashboard() {
       {/* Registrations List */}
       <div className="flex flex-col gap-lg">
         <div className="flex items-center justify-between">
-          <h2 className="section-title flex items-center gap-xs">
-            <Ticket size={20} /> MY EVENT PASSES & TICKETS
+          <h2 className="section-title flex items-center gap-xs" style={{ fontSize: '1.25rem' }}>
+            <Ticket size={20} className="text-white" /> MY EVENT PASSES & TICKETS
           </h2>
         </div>
 
@@ -168,35 +196,62 @@ export default function UserDashboard() {
             {registrations.map((reg) => {
               const event = reg.eventId;
               return (
-                <div key={reg._id} className="card-mono" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', justifyBetween: 'space-between', gap: '1rem' }}>
+                <div 
+                  key={reg._id} 
+                  className="card-mono" 
+                  style={{ 
+                    padding: '1.5rem', 
+                    display: 'flex', 
+                    flexDirection: 'column', 
+                    justifyContent: 'space-between', 
+                    gap: '1.25rem',
+                    border: '1px solid var(--border-subtle)',
+                    background: 'linear-gradient(180deg, rgba(17, 24, 39, 0.8), rgba(9, 9, 12, 0.95))',
+                    borderRadius: '16px',
+                    position: 'relative',
+                    overflow: 'hidden'
+                  }}
+                >
+                  {/* Top Status Strip */}
+                  <div 
+                    style={{ 
+                      position: 'absolute', 
+                      top: 0, 
+                      left: 0, 
+                      right: 0, 
+                      height: '3px', 
+                      background: reg.status === 'CONFIRMED' || reg.status === 'CHECKED_IN' ? 'linear-gradient(to right, var(--accent-emerald), var(--accent-cyan))' : 'var(--border-subtle)' 
+                    }} 
+                  />
+
                   <div className="flex flex-col gap-sm">
                     <div className="flex items-center justify-between">
                       <span className="font-mono font-bold text-white" style={{ fontSize: '0.8125rem' }}>{reg.registrationId}</span>
                       <StatusBadge status={reg.status} />
                     </div>
 
-                    <h3 className="font-heading font-bold text-white truncate" style={{ fontSize: '1.125rem' }}>
+                    <h3 className="font-heading font-bold text-white truncate" style={{ fontSize: '1.125rem', marginTop: '0.2rem' }}>
                       {event?.title || 'Event'}
                     </h3>
 
-                    <div className="text-muted flex flex-col gap-xs" style={{ fontSize: '0.75rem' }}>
+                    <div className="text-muted flex flex-col gap-xs" style={{ fontSize: '0.785rem', marginTop: '0.25rem' }}>
                       <div className="flex items-center gap-xs">
-                        <Calendar size={14} className="text-dim" />
-                        <span>{new Date(event?.eventDate).toLocaleDateString()} at {event?.startTime}</span>
+                        <Calendar size={14} className="text-dim shrink-0" />
+                        <span className="text-white">{new Date(event?.eventDate).toLocaleDateString()} at {event?.startTime}</span>
                       </div>
                       <div className="flex items-center gap-xs">
-                        <MapPin size={14} className="text-dim" />
-                        <span className="truncate">{event?.venue}, {event?.city}</span>
+                        <MapPin size={14} className="text-dim shrink-0" />
+                        <span className="truncate text-muted">{event?.venue}, {event?.city}</span>
                       </div>
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between gap-xs flex-wrap" style={{ paddingTop: '0.75rem', borderTop: '1px solid var(--border-subtle)', marginTop: '0.5rem' }}>
+                  <div className="flex items-center justify-between gap-sm flex-wrap" style={{ paddingTop: '0.875rem', borderTop: '1px solid var(--border-subtle)', marginTop: '0.25rem' }}>
                     {event?.slug ? (
                       <Link
                         to={`/events/${event.slug}?tab=leaderboard`}
                         className="btn btn-secondary btn-sm flex items-center gap-xs text-amber-400"
-                        style={{ borderColor: 'rgba(245, 158, 11, 0.3)' }}
+                        style={{ borderColor: 'rgba(245, 158, 11, 0.35)', fontSize: '0.75rem' }}
                       >
                         <Trophy size={14} /> View Event Leaderboard
                       </Link>
@@ -204,7 +259,8 @@ export default function UserDashboard() {
 
                     <button
                       onClick={() => setSelectedPass(reg)}
-                      className="btn btn-secondary btn-sm"
+                      className="btn btn-primary btn-sm"
+                      style={{ fontSize: '0.75rem' }}
                     >
                       <QrCode size={14} /> View QR Pass
                     </button>
@@ -227,28 +283,28 @@ export default function UserDashboard() {
       {/* QR Code Pass Modal */}
       {selectedPass && (
         <div className="modal-overlay">
-          <div className="modal-content text-center flex flex-col gap-md" style={{ maxWidth: '32rem' }}>
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-              <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded bg-cyan-500 text-slate-950 font-bold flex items-center justify-center text-xs">P1</div>
-                <span className="text-xs font-mono font-bold tracking-widest text-cyan-400">PEAK1 OFFICIAL ENTRY PASS</span>
+          <div className="modal-content text-center flex flex-col gap-md" style={{ maxWidth: '32rem', padding: '1.75rem' }}>
+            <div className="flex items-center justify-between" style={{ paddingBottom: '0.75rem', borderBottom: '1px solid var(--border-subtle)' }}>
+              <div className="flex items-center gap-xs">
+                <div className="brand-badge" style={{ width: '1.75rem', height: '1.75rem', fontSize: '0.75rem', backgroundColor: 'var(--accent-cyan)', color: 'var(--color-black)' }}>P1</div>
+                <span className="font-mono font-bold text-white" style={{ fontSize: '0.75rem', letterSpacing: '0.08em' }}>PEAK1 OFFICIAL ENTRY PASS</span>
               </div>
               <StatusBadge status={selectedPass.status} />
             </div>
 
-            <div className="text-left py-1">
-              <h3 className="section-title text-xl text-white">{selectedPass.eventId?.title || 'Event Pass'}</h3>
-              <p className="text-muted text-xs flex items-center gap-3 mt-1">
+            <div className="text-left" style={{ paddingBlock: '0.25rem' }}>
+              <h3 className="section-title" style={{ fontSize: '1.25rem', color: '#FFFFFF' }}>{selectedPass.eventId?.title || 'Event Pass'}</h3>
+              <p className="text-muted" style={{ fontSize: '0.75rem', marginTop: '0.35rem', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
                 <span>📍 {selectedPass.eventId?.venue}, {selectedPass.eventId?.city}</span>
                 <span>📅 {new Date(selectedPass.eventId?.eventDate).toLocaleDateString()}</span>
               </p>
             </div>
 
-            <div style={{ backgroundColor: '#FFFFFF', padding: '1.25rem', borderRadius: '12px', width: 'fit-content', marginInline: 'auto' }}>
+            <div style={{ backgroundColor: '#FFFFFF', padding: '1.25rem', borderRadius: '12px', width: 'fit-content', marginInline: 'auto', boxShadow: '0 10px 25px rgba(0,0,0,0.5)' }}>
               <QRCodeSVG value={selectedPass.signedQrPayload || selectedPass.registrationId} size={200} />
             </div>
 
-            <div className="card-mono text-left font-mono flex flex-col gap-xs p-3" style={{ backgroundColor: 'var(--color-black)', fontSize: '0.75rem' }}>
+            <div className="card-mono text-left font-mono flex flex-col gap-xs p-3" style={{ backgroundColor: 'var(--color-black)', fontSize: '0.75rem', border: '1px solid var(--border-subtle)' }}>
               <div className="flex justify-between">
                 <span className="text-muted">PASS ID:</span>
                 <span className="font-bold text-white">{selectedPass.registrationId}</span>
@@ -259,25 +315,25 @@ export default function UserDashboard() {
               </div>
               <div className="flex justify-between">
                 <span className="text-muted">EMAIL:</span>
-                <span className="text-slate-300">{selectedPass.participantDetails?.email || user?.email}</span>
+                <span className="text-muted">{selectedPass.participantDetails?.email || user?.email}</span>
               </div>
               {selectedPass.raceDetails?.vehicleModel && (
                 <div className="flex justify-between">
                   <span className="text-muted">VEHICLE / CLASS:</span>
-                  <span className="text-cyan-400">{selectedPass.raceDetails.vehicleModel} ({selectedPass.raceDetails.vehicleNumber})</span>
+                  <span style={{ color: 'var(--accent-cyan)' }}>{selectedPass.raceDetails.vehicleModel} ({selectedPass.raceDetails.vehicleNumber})</span>
                 </div>
               )}
             </div>
 
-            <p className="text-slate-400 text-[11px] leading-tight">
+            <p className="text-muted" style={{ fontSize: '0.7rem', lineHeight: 1.4 }}>
               Present this pass & QR code at the entry gate. Verification requires valid photo ID matching the participant name.
             </p>
 
-            <div className="flex gap-md pt-2 modal-action-buttons">
-              <button onClick={() => window.print()} className="btn btn-secondary flex-1 flex items-center justify-center gap-2">
+            <div className="flex gap-md modal-action-buttons" style={{ paddingTop: '0.5rem' }}>
+              <button onClick={() => window.print()} className="btn btn-secondary flex-1 flex items-center justify-center gap-xs" style={{ fontSize: '0.8125rem' }}>
                 <Printer size={15} /> Print / Save PDF
               </button>
-              <button onClick={() => setSelectedPass(null)} className="btn btn-primary flex-1">
+              <button onClick={() => setSelectedPass(null)} className="btn btn-primary flex-1" style={{ fontSize: '0.8125rem' }}>
                 Close Pass
               </button>
             </div>
