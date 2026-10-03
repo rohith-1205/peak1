@@ -46,6 +46,14 @@ app.use('/uploads', express.static(path.join(__dirname, '../public/uploads'), {
   }
 }));
 
+// Root Route
+app.get('/', (req, res) => {
+  res.status(200).json({
+    message: 'Peak1 Backend API Service is active',
+    health: '/api/v1/health'
+  });
+});
+
 // API Health Check
 const mongoose = require('mongoose');
 app.get('/api/v1/health', (req, res) => {
