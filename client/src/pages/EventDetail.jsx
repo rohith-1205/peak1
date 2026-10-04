@@ -326,7 +326,7 @@ export default function EventDetail() {
             </div>
 
             {/* Action Row */}
-            <div className="flex items-center justify-between gap-md flex-wrap">
+            <div className="flex flex-col gap-sm">
               <span className="text-muted" style={{ fontSize: '0.75rem' }}>
                 Organizer: <strong className="text-white">{event.organizer?.name}</strong>
               </span>
@@ -352,6 +352,7 @@ export default function EventDetail() {
                   onClick={handleRegisterClick}
                   disabled={event.status !== 'PUBLISHED'}
                   className="btn btn-primary btn-md"
+                  style={{ alignSelf: 'flex-start' }}
                 >
                   {event.status === 'PUBLISHED' ? 'Register Now' : 'Registration Closed'}
                 </button>
