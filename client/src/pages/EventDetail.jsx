@@ -410,7 +410,7 @@ export default function EventDetail() {
               <h3 className="font-heading font-bold text-white uppercase flex items-center gap-xs" style={{ fontSize: '1.25rem', marginBottom: '1rem' }}>
                 <FileText size={20} /> Event Overview
               </h3>
-              <p className="text-muted leading-relaxed whitespace-pre-line" style={{ fontSize: '0.875rem' }}>
+              <p className="text-muted leading-relaxed" style={{ fontSize: '0.875rem', whiteSpace: 'pre-wrap', wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
                 {event.fullDescription}
               </p>
             </div>

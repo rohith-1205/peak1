@@ -54,8 +54,8 @@ export default function AdminLayout() {
       <header className="admin-header">
         <div className="admin-header-left">
           <Link to="/admin" className="brand-logo">
-            <div className="brand-badge" style={{ backgroundColor: 'var(--text-white)', color: 'var(--color-black)' }}>
-              P1
+            <div className="brand-badge" style={{ backgroundColor: 'transparent', border: 'none', padding: 0, overflow: 'hidden' }}>
+              <img src="/peak1logo.jpeg" alt="Peak1" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 'var(--radius-sm)' }} />
             </div>
             <span className="admin-header-title">
               PEAK<span className="brand-accent">1</span> CONSOLE

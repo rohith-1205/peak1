@@ -22,7 +22,9 @@ export default function Navbar() {
       <div className="container header-inner">
         {/* Brand Logo */}
         <Link to="/" className="brand-logo">
-          <div className="brand-badge">P1</div>
+          <div className="brand-badge" style={{ padding: 0, overflow: 'hidden', backgroundColor: 'transparent', border: 'none' }}>
+            <img src="/peak1logo.jpeg" alt="Peak1" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 'var(--radius-sm)' }} />
+          </div>
           <span className="brand-name">
             PEAK<span className="brand-accent">1</span>
           </span>

@@ -286,7 +286,7 @@ export default function UserDashboard() {
           <div className="modal-content text-center flex flex-col gap-md" style={{ maxWidth: '32rem', padding: '1.75rem' }}>
             <div className="flex items-center justify-between" style={{ paddingBottom: '0.75rem', borderBottom: '1px solid var(--border-subtle)' }}>
               <div className="flex items-center gap-xs">
-                <div className="brand-badge" style={{ width: '1.75rem', height: '1.75rem', fontSize: '0.75rem', backgroundColor: 'var(--accent-cyan)', color: 'var(--color-black)' }}>P1</div>
+                <div className="brand-badge" style={{ width: '1.75rem', height: '1.75rem', fontSize: '0.75rem', padding: 0, overflow: 'hidden', backgroundColor: 'transparent', border: 'none' }}><img src="/peak1logo.jpeg" alt="Peak1" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 'var(--radius-sm)' }} /></div>
                 <span className="font-mono font-bold text-white" style={{ fontSize: '0.75rem', letterSpacing: '0.08em' }}>PEAK1 OFFICIAL ENTRY PASS</span>
               </div>
               <StatusBadge status={selectedPass.status} />

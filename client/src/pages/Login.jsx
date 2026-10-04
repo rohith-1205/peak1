@@ -36,8 +36,8 @@ export default function Login() {
     <div className="container flex items-center justify-center section-padding" style={{ minHeight: '70vh' }}>
       <div className="card-mono w-full" style={{ maxWidth: '28rem', padding: '2rem' }}>
         <div className="text-center flex flex-col items-center gap-xs" style={{ marginBottom: '1.5rem' }}>
-          <div className="brand-badge" style={{ width: '2.5rem', height: '2.5rem', fontSize: '1rem' }}>
-            P1
+          <div className="brand-badge" style={{ width: '2.5rem', height: '2.5rem', padding: 0, overflow: 'hidden', backgroundColor: 'transparent', border: 'none' }}>
+            <img src="/peak1logo.jpeg" alt="Peak1" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 'var(--radius-sm)' }} />
           </div>
           <h2 className="section-title" style={{ fontSize: '1.5rem', marginTop: '0.5rem' }}>
             SIGN IN TO PEAK1

@@ -13,8 +13,8 @@ export default function Footer() {
           {/* Brand Column */}
           <div className="footer-col">
             <Link to="/" className="brand-logo" style={{ marginBottom: '0.25rem' }}>
-              <div className="brand-badge" style={{ width: '1.75rem', height: '1.75rem', fontSize: '0.75rem' }}>
-                P1
+              <div className="brand-badge" style={{ width: '1.75rem', height: '1.75rem', padding: 0, overflow: 'hidden', backgroundColor: 'transparent', border: 'none' }}>
+                <img src="/peak1logo.jpeg" alt="Peak1" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 'var(--radius-sm)' }} />
               </div>
               <span className="brand-name" style={{ fontSize: '1.125rem' }}>
                 PEAK<span className="brand-accent">1</span>
