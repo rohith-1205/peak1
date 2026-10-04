@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import StatusBadge from '../components/StatusBadge';
-import { Ticket, Calendar, MapPin, QrCode, Printer, Mail, Phone, UserCheck, X, Trophy } from 'lucide-react';
+import { Ticket, Calendar, MapPin, QrCode, Printer, Mail, Phone, UserCheck, X, Trophy, FileText } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 
 export default function UserDashboard() {
@@ -247,15 +247,26 @@ export default function UserDashboard() {
                   </div>
 
                   <div className="flex items-center justify-between gap-sm flex-wrap" style={{ paddingTop: '0.875rem', borderTop: '1px solid var(--border-subtle)', marginTop: '0.25rem' }}>
-                    {event?.slug ? (
-                      <Link
-                        to={`/events/${event.slug}?tab=leaderboard`}
-                        className="btn btn-secondary btn-sm flex items-center gap-xs text-amber-400"
-                        style={{ borderColor: 'rgba(245, 158, 11, 0.35)', fontSize: '0.75rem' }}
-                      >
-                        <Trophy size={14} /> View Event Leaderboard
-                      </Link>
-                    ) : <div />}
+                   <div className="flex items-center gap-xs flex-wrap">
+                      {event?.slug ? (
+                        <Link
+                          to={`/events/${event.slug}`}
+                          className="btn btn-secondary btn-sm flex items-center gap-xs"
+                          style={{ fontSize: '0.75rem' }}
+                        >
+                          <FileText size={14} /> Event Details
+                        </Link>
+                      ) : <div />}
+                      {event?.slug ? (
+                        <Link
+                          to={`/events/${event.slug}?tab=leaderboard`}
+                          className="btn btn-secondary btn-sm flex items-center gap-xs text-amber-400"
+                          style={{ borderColor: 'rgba(245, 158, 11, 0.35)', fontSize: '0.75rem' }}
+                        >
+                          <Trophy size={14} /> Leaderboard
+                        </Link>
+                      ) : <div />}
+                    </div>
 
                     <button
                       onClick={() => setSelectedPass(reg)}

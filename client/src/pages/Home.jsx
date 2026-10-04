@@ -206,11 +206,11 @@ export default function Home() {
             <p className="text-muted" style={{ maxWidth: '32rem', fontSize: '0.875rem', lineHeight: 1.6 }}>
               Event schedule details, dates, venues, and registration forms are accessible exclusively to authenticated participants. Please sign in or create an account.
             </p>
-            <div className="flex gap-md" style={{ marginTop: '0.5rem' }}>
-              <Link to="/login" className="btn btn-primary">
+            <div className="flex gap-md" style={{ marginTop: '0.5rem', flexWrap: 'wrap', justifyContent: 'center', width: '100%' }}>
+              <Link to="/login" className="btn btn-primary" style={{ flex: '1 1 auto', minWidth: '10rem', maxWidth: '16rem', textAlign: 'center', justifyContent: 'center' }}>
                 Account Sign In
               </Link>
-              <Link to="/register" className="btn btn-secondary">
+              <Link to="/register" className="btn btn-secondary" style={{ flex: '1 1 auto', minWidth: '10rem', maxWidth: '16rem', textAlign: 'center', justifyContent: 'center' }}>
                 Register Participant Account
               </Link>
             </div>
