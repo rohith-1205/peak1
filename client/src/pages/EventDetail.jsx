@@ -268,10 +268,10 @@ export default function EventDetail() {
       </div>
 
       {/* Hero Banner Header Card */}
-      <div className="card-mono" style={{ overflow: 'hidden' }}>
+      <div className="card-mono">
         <div className="grid grid-3">
           {/* Poster */}
-          <div style={{ position: 'relative', width: '100%', aspectRatio: '16/10', backgroundColor: 'var(--color-black)' }}>
+          <div style={{ position: 'relative', width: '100%', minHeight: '260px', backgroundColor: 'var(--color-black)', overflow: 'hidden', alignSelf: 'stretch' }}>
             <img
               src={getImageUrl(event.posterUrl) || 'https://images.unsplash.com/photo-1511919884226-fd3cad34687c?auto=format&fit=crop&q=80&w=800'}
               alt={event.title}
@@ -280,7 +280,7 @@ export default function EventDetail() {
           </div>
 
           {/* Details Column */}
-          <div style={{ padding: '2rem', gridColumn: 'span 2', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '1.5rem' }}>
+          <div style={{ padding: '2rem', gridColumn: 'span 2', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', gap: '1.5rem' }}>
             <div className="flex flex-col gap-sm">
               <div className="flex items-center gap-xs">
                 {isAlreadyRegistered ? (
