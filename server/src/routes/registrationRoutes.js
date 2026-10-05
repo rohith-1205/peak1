@@ -14,7 +14,7 @@ router.post('/admin/check-in', authenticateUser, requireGateStaff, gateRateLimit
 router.post('/admin/check-in/undo', authenticateUser, requireGateStaff, gateRateLimiter, registrationController.undoCheckIn);
 router.get('/admin/check-in/stats', authenticateUser, requireGateStaff, registrationController.getCheckInStats);
 router.get('/admin/check-in/logs', authenticateUser, requireGateStaff, registrationController.getCheckInLogs);
-router.get('/admin/export', authenticateUser, requireAdmin, registrationController.exportRegistrationsCSV);
+router.get('/admin/export', authenticateUser, requireAdmin, registrationController.exportRegistrationsPDF);
 router.delete('/admin/:id', authenticateUser, requireAdmin, registrationController.deleteRegistration);
 router.put('/admin/:id/leaderboard', authenticateUser, requireAdmin, registrationController.updateLeaderboard);
 

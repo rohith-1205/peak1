@@ -91,7 +91,7 @@ export default function AdminRegistrations() {
     }
   };
 
-  const handleExportCSV = () => {
+  const handleExportPDF = () => {
     const token = localStorage.getItem('peak1_admin_token');
     let url = `/api/v1/registrations/admin/export?token=${token}`;
     if (eventFilter) url += `&eventId=${eventFilter}`;
@@ -191,8 +191,8 @@ export default function AdminRegistrations() {
           >
             <QrCode size={14} /> Live QR Gate Check-in
           </button>
-          <button onClick={handleExportCSV} className="btn btn-secondary btn-sm flex-1 sm:flex-initial justify-center">
-            <Download size={14} /> Export CSV Roster
+          <button onClick={handleExportPDF} className="btn btn-secondary btn-sm flex-1 sm:flex-initial justify-center">
+            <Download size={14} /> Export PDF Roster
           </button>
         </div>
       </div>
