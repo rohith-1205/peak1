@@ -99,6 +99,14 @@ export default function AdminRegistrations() {
     window.open(url, '_blank');
   };
 
+  const handleExportCSV = () => {
+    const token = localStorage.getItem('peak1_admin_token');
+    let url = `/api/v1/registrations/admin/export/csv?token=${token}`;
+    if (eventFilter) url += `&eventId=${eventFilter}`;
+    if (statusFilter) url += `&status=${statusFilter}`;
+    window.open(url, '_blank');
+  };
+
   const handlePerformCheckIn = async (e) => {
     e.preventDefault();
     setProcessingCheckIn(true);
@@ -193,6 +201,9 @@ export default function AdminRegistrations() {
           </button>
           <button onClick={handleExportPDF} className="btn btn-secondary btn-sm flex-1 sm:flex-initial justify-center">
             <Download size={14} /> Export PDF Roster
+          </button>
+          <button onClick={handleExportCSV} className="btn btn-secondary btn-sm flex-1 sm:flex-initial justify-center">
+            <Download size={14} /> Export CSV Roster
           </button>
         </div>
       </div>

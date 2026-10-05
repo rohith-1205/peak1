@@ -142,6 +142,68 @@ const exportRegistrationsPDF = async (req, res, next) => {
   }
 };
 
+const exportRegistrationsCSV = async (req, res, next) => {
+  try {
+    const { registrations } = await registrationService.getAllRegistrations({ ...req.query, limit: 10000 });
+
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', `attachment; filename=registrations-${Date.now()}.csv`);
+
+    let csvContent = 'Registration ID,Event Title,Participant Name,Email,Phone,DOB,Gender,City,State,Emergency Contact Name,Emergency Contact Phone,Blood Group,T-Shirt Size,Team Name,Vehicle Model,Vehicle Number,Driving License,Status,Checked In,Check-In Time,Checked In By,Custom Answers,Created At\n';
+
+    registrations.forEach(r => {
+      const event = r.eventId || {};
+      const details = r.participantDetails || {};
+      const snapshot = r.participantSnapshot || {};
+      const race = r.raceDetails || {};
+      const customMap = r.customResponses || new Map();
+
+      const eventTitle = event.title ? `"${event.title.replace(/"/g, '""')}"` : 'N/A';
+      const name = `"${(snapshot.fullName || details.fullName || '').replace(/"/g, '""')}"`;
+      const email = `"${snapshot.email || details.email || ''}"`;
+      const phone = `"${snapshot.phone || details.phone || ''}"`;
+      const dob = snapshot.dob ? new Date(snapshot.dob).toISOString().split('T')[0] : (details.dob ? new Date(details.dob).toISOString().split('T')[0] : '');
+      const gender = `"${snapshot.gender || details.gender || ''}"`;
+      const city = `"${snapshot.city || details.city || ''}"`;
+      const state = `"${snapshot.state || ''}"`;
+      const emName = `"${(snapshot.emergencyContactName || details.emergencyContact || '').replace(/"/g, '""')}"`;
+      const emPhone = `"${snapshot.emergencyContactPhone || ''}"`;
+      const blood = `"${snapshot.bloodGroup || details.bloodGroup || ''}"`;
+      const tShirt = `"${snapshot.tShirtSize || details.tShirtSize || ''}"`;
+
+      const team = `"${(race.teamName || '').replace(/"/g, '""')}"`;
+      const vModel = `"${(race.vehicleModel || '').replace(/"/g, '""')}"`;
+      const vNum = `"${(race.vehicleNumber || '').replace(/"/g, '""')}"`;
+      const license = `"${(race.drivingLicense || '').replace(/"/g, '""')}"`;
+
+      const isCheckedIn = r.checkInDetails?.isCheckedIn ? 'YES' : 'NO';
+      const checkInTime = r.checkInDetails?.checkInTime ? new Date(r.checkInDetails.checkInTime).toISOString() : '';
+      const checkedInBy = r.checkInDetails?.checkedInBy?.name ? `"${r.checkInDetails.checkedInBy.name}"` : '';
+
+      const questionsList = event.registrationConfig?.customQuestions || event.customFields || [];
+      const labelValuePairs = [];
+
+      const rawCustomObj = customMap instanceof Map ? Object.fromEntries(customMap) : (customMap || {});
+      Object.entries(rawCustomObj).forEach(([fieldId, val]) => {
+        const qObj = questionsList.find(q => (q.fieldId || q.id) === fieldId);
+        const label = qObj ? qObj.label : fieldId;
+        labelValuePairs.push(`${label}: ${Array.isArray(val) ? val.join('; ') : val}`);
+      });
+
+      const customAnswersStr = `"${labelValuePairs.join(' | ').replace(/"/g, '""')}"`;
+      const createdAt = new Date(r.createdAt).toISOString();
+
+      csvContent += `${r.registrationId},${eventTitle},${name},${email},${phone},${dob},${gender},${city},${state},${emName},${emPhone},${blood},${tShirt},${team},${vModel},${vNum},${license},${r.status},${isCheckedIn},${checkInTime},${checkedInBy},${customAnswersStr},${createdAt}\n`;
+    });
+
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', 'attachment; filename="participants_roster.csv"');
+    return res.status(200).send(csvContent);
+  } catch (error) {
+    next(error);
+  }
+};
+
 const deleteRegistration = async (req, res, next) => {
   try {
     const result = await registrationService.deleteRegistration(req.params.id, req.user._id);
@@ -170,6 +232,7 @@ module.exports = {
   getCheckInStats,
   getCheckInLogs,
   exportRegistrationsPDF,
+  exportRegistrationsCSV,
   deleteRegistration,
   updateLeaderboard
 };
