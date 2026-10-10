@@ -18,6 +18,7 @@ router.get('/admin/export', authenticateUser, requireAdmin, registrationControll
 router.get('/admin/export/csv', authenticateUser, requireAdmin, registrationController.exportRegistrationsCSV);
 router.delete('/admin/:id', authenticateUser, requireAdmin, registrationController.deleteRegistration);
 router.put('/admin/:id/leaderboard', authenticateUser, requireAdmin, registrationController.updateLeaderboard);
+router.post('/admin/event/:eventId/manual-register', authenticateUser, requireAdmin, registrationController.manualRegister);
 
 module.exports = router;
 

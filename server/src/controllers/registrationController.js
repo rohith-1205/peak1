@@ -222,6 +222,16 @@ const updateLeaderboard = async (req, res, next) => {
   }
 };
 
+const manualRegister = async (req, res, next) => {
+  try {
+    const { eventId } = req.params;
+    const result = await registrationService.createManualRegistration(eventId, req.user._id, req.body);
+    return ApiResponse.success(res, { registration: result }, 'Manual registration created successfully', 201);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   registerForEvent,
   getMyRegistrations,
@@ -234,6 +244,7 @@ module.exports = {
   exportRegistrationsPDF,
   exportRegistrationsCSV,
   deleteRegistration,
-  updateLeaderboard
+  updateLeaderboard,
+  manualRegister
 };
 

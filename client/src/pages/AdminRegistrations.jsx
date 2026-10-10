@@ -5,7 +5,7 @@ import { useToast } from '../context/ToastContext';
 import StatusBadge from '../components/StatusBadge';
 import { QRCodeSVG } from 'qrcode.react';
 import { 
-  Download, Search, QrCode, X, CheckCircle2, AlertCircle, Eye, Trash2, Filter, AlertTriangle, Award
+  Download, Search, QrCode, X, CheckCircle2, AlertCircle, Eye, Trash2, Filter, AlertTriangle, Award, PlusCircle
 } from 'lucide-react';
 
 export default function AdminRegistrations() {
@@ -41,6 +41,21 @@ export default function AdminRegistrations() {
   const [leaderboardScore, setLeaderboardScore] = useState('');
   const [leaderboardRank, setLeaderboardRank] = useState('');
   const [updatingLeaderboard, setUpdatingLeaderboard] = useState(false);
+
+  // Manual Registration State
+  const [manualRegModalOpen, setManualRegModalOpen] = useState(false);
+  const [manualRegEventId, setManualRegEventId] = useState('');
+  const [manualRegSubmitting, setManualRegSubmitting] = useState(false);
+  const [manualRegData, setManualRegData] = useState({
+    fullName: '',
+    email: '',
+    phone: '',
+    city: '',
+    vehicleModel: '',
+    vehicleNumber: '',
+    teamName: '',
+    isCheckedIn: false
+  });
 
   // Fetch Event List for Filter Dropdown
   useEffect(() => {
@@ -206,6 +221,32 @@ export default function AdminRegistrations() {
     }
   };
 
+  const handleManualRegSubmit = async (e) => {
+    e.preventDefault();
+    if (!manualRegEventId) {
+      showToast('Please select an event for the registration', 'error');
+      return;
+    }
+    setManualRegSubmitting(true);
+    try {
+      const res = await adminApi.post(`/registrations/admin/event/${manualRegEventId}/manual-register`, manualRegData);
+      if (res.success) {
+        showToast('Manual registration created successfully', 'success');
+        setManualRegModalOpen(false);
+        setManualRegData({
+          fullName: '', email: '', phone: '', city: '',
+          vehicleModel: '', vehicleNumber: '', teamName: '', isCheckedIn: false
+        });
+        setManualRegEventId('');
+        fetchRegistrations();
+      }
+    } catch (err) {
+      showToast(err.message || 'Failed to create manual registration', 'error');
+    } finally {
+      setManualRegSubmitting(false);
+    }
+  };
+
   return (
     <div className="flex flex-col gap-lg">
       {/* Header */}
@@ -228,6 +269,13 @@ export default function AdminRegistrations() {
             className="btn btn-primary btn-sm flex-1 sm:flex-initial justify-center"
           >
             <QrCode size={14} /> Live QR Gate Check-in
+          </button>
+          <button 
+            onClick={() => setManualRegModalOpen(true)} 
+            className="btn btn-secondary btn-sm flex-1 sm:flex-initial justify-center"
+            style={{ color: 'var(--accent-cyan)', borderColor: 'rgba(34,211,238,0.3)' }}
+          >
+            <PlusCircle size={14} /> Add Manual Entry
           </button>
           <button onClick={handleExportPDF} className="btn btn-secondary btn-sm flex-1 sm:flex-initial justify-center">
             <Download size={14} /> Export PDF Roster
@@ -665,6 +713,127 @@ export default function AdminRegistrations() {
                   style={{ backgroundColor: 'var(--accent-amber)', borderColor: 'var(--accent-amber)', color: '#000000' }}
                 >
                   {updatingLeaderboard ? 'Saving...' : 'Save Leaderboard Rank'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Manual Registration Modal */}
+      {manualRegModalOpen && (
+        <div className="modal-backdrop">
+          <div className="modal-container card-mono p-0" style={{ maxWidth: '32rem' }}>
+            <div className="modal-header">
+              <h3 className="modal-title flex items-center gap-sm">
+                <PlusCircle size={18} className="text-cyan" /> Add Manual Entry
+              </h3>
+              <button onClick={() => setManualRegModalOpen(false)} className="btn btn-ghost" style={{ padding: '0.25rem' }}>
+                <X size={16} />
+              </button>
+            </div>
+            <form onSubmit={handleManualRegSubmit} className="modal-body flex flex-col gap-md">
+              <div className="form-group">
+                <label className="form-label">Select Target Event <span className="text-rose">*</span></label>
+                <select
+                  required
+                  value={manualRegEventId}
+                  onChange={(e) => setManualRegEventId(e.target.value)}
+                  className="form-select"
+                >
+                  <option value="">-- Choose an Event --</option>
+                  {eventsList.map(evt => (
+                    <option key={evt._id} value={evt._id}>{evt.title}</option>
+                  ))}
+                </select>
+                <span className="form-hint">Closed and Published events are eligible. Capacity limits will be bypassed.</span>
+              </div>
+
+              <div className="grid grid-2 gap-md">
+                <div className="form-group">
+                  <label className="form-label">Full Name <span className="text-rose">*</span></label>
+                  <input
+                    required
+                    type="text"
+                    className="form-input"
+                    value={manualRegData.fullName}
+                    onChange={e => setManualRegData({...manualRegData, fullName: e.target.value})}
+                  />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Email <span className="text-rose">*</span></label>
+                  <input
+                    required
+                    type="email"
+                    className="form-input"
+                    value={manualRegData.email}
+                    onChange={e => setManualRegData({...manualRegData, email: e.target.value})}
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-2 gap-md">
+                <div className="form-group">
+                  <label className="form-label">Phone <span className="text-rose">*</span></label>
+                  <input
+                    required
+                    type="tel"
+                    className="form-input"
+                    value={manualRegData.phone}
+                    onChange={e => setManualRegData({...manualRegData, phone: e.target.value})}
+                  />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">City</label>
+                  <input
+                    type="text"
+                    className="form-input"
+                    value={manualRegData.city}
+                    onChange={e => setManualRegData({...manualRegData, city: e.target.value})}
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-2 gap-md">
+                <div className="form-group">
+                  <label className="form-label">Vehicle Model (Optional)</label>
+                  <input
+                    type="text"
+                    className="form-input"
+                    value={manualRegData.vehicleModel}
+                    onChange={e => setManualRegData({...manualRegData, vehicleModel: e.target.value})}
+                  />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Vehicle Number (Optional)</label>
+                  <input
+                    type="text"
+                    className="form-input"
+                    value={manualRegData.vehicleNumber}
+                    onChange={e => setManualRegData({...manualRegData, vehicleNumber: e.target.value})}
+                  />
+                </div>
+              </div>
+
+              <div className="form-group flex items-center justify-between mt-2 card-mono p-3">
+                <div>
+                  <label className="form-label" style={{ marginBottom: 0 }}>Mark as Checked In</label>
+                  <span className="form-hint">Automatically admit this participant at the gate.</span>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={manualRegData.isCheckedIn}
+                  onChange={e => setManualRegData({...manualRegData, isCheckedIn: e.target.checked})}
+                  style={{ width: '1.25rem', height: '1.25rem' }}
+                />
+              </div>
+
+              <div className="modal-footer mt-4">
+                <button type="button" onClick={() => setManualRegModalOpen(false)} className="btn btn-secondary">
+                  Cancel
+                </button>
+                <button type="submit" disabled={manualRegSubmitting} className="btn btn-primary">
+                  {manualRegSubmitting ? 'Creating Entry...' : 'Create Registration'}
                 </button>
               </div>
             </form>

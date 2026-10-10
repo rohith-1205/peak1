@@ -742,6 +742,93 @@ const updateLeaderboardDetails = async (id, data, actorId) => {
   return reg;
 };
 
+const createManualRegistration = async (eventId, adminId, registrationData) => {
+  const event = await Event.findById(eventId);
+  if (!event) {
+    const error = new Error('Event not found');
+    error.statusCode = 404;
+    error.errorCode = 'EVENT_NOT_FOUND';
+    throw error;
+  }
+
+  const { fullName, email, phone, city, vehicleModel, vehicleNumber, teamName, isCheckedIn } = registrationData;
+
+  if (!fullName || !email || !phone) {
+    const error = new Error('Name, Email, and Phone are required for manual registration');
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const lowercaseEmail = email.toLowerCase().trim();
+  
+  // Try to find an existing user or create a shadow/guest user
+  let user = await User.findOne({ email: lowercaseEmail });
+  if (!user) {
+    user = await User.create({
+      name: fullName,
+      email: lowercaseEmail,
+      phone: phone,
+      password: Math.random().toString(36).slice(-10) + 'A1!',
+      isVerified: true
+    });
+  }
+
+  // Check if they are already registered
+  const existingRegistration = await Registration.findOne({
+    eventId,
+    userId: user._id
+  });
+
+  if (existingRegistration && existingRegistration.status !== REGISTRATION_STATUS.CANCELLED && existingRegistration.status !== 'PAYMENT_FAILED') {
+    const error = new Error('User is already registered for this event');
+    error.statusCode = 400;
+    error.errorCode = 'DUPLICATE_REGISTRATION';
+    throw error;
+  }
+  
+  if (existingRegistration) {
+    await Registration.findByIdAndDelete(existingRegistration._id);
+  }
+
+  const registrationId = generateRegistrationId();
+  const qrPayload = generateSignedQrPayload(eventId.toString(), user._id.toString(), registrationId);
+  const qrCodeData = await generateQrDataUrl(qrPayload);
+
+  const newReg = await Registration.create({
+    registrationId,
+    eventId: event._id,
+    userId: user._id,
+    participantDetails: {
+      fullName,
+      email: lowercaseEmail,
+      phone,
+      city: city || ''
+    },
+    raceDetails: {
+      vehicleModel: vehicleModel || '',
+      vehicleNumber: vehicleNumber || '',
+      teamName: teamName || ''
+    },
+    status: isCheckedIn ? REGISTRATION_STATUS.CHECKED_IN : REGISTRATION_STATUS.CONFIRMED,
+    qrCodeData,
+    checkInDetails: {
+      isCheckedIn: !!isCheckedIn,
+      checkInTime: isCheckedIn ? new Date() : null,
+      checkedInBy: isCheckedIn ? adminId : null
+    }
+  });
+
+  await AuditLog.create({
+    actorId: adminId,
+    action: 'MANUAL_REGISTRATION_CREATED',
+    resource: 'REGISTRATION',
+    resourceId: newReg._id.toString(),
+    metadata: { participant: fullName, eventId: event._id.toString() }
+  });
+
+  return newReg;
+};
+
 module.exports = {
   initiateRegistration,
   getUserRegistrations,
@@ -753,6 +840,7 @@ module.exports = {
   getCheckInStats,
   getCheckInLogs,
   deleteRegistration,
-  updateLeaderboardDetails
+  updateLeaderboardDetails,
+  createManualRegistration
 };
 
