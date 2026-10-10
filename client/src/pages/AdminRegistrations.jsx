@@ -722,15 +722,19 @@ export default function AdminRegistrations() {
 
       {/* Manual Registration Modal */}
       {manualRegModalOpen && (
-        <div className="modal-backdrop">
-          <div className="modal-container card-mono p-0" style={{ maxWidth: '32rem' }}>
+        <div className="modal-overlay">
+          <div className="modal-content flex flex-col gap-md">
+            <button
+              onClick={() => setManualRegModalOpen(false)}
+              style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}
+            >
+              <X size={20} />
+            </button>
+            
             <div className="modal-header">
-              <h3 className="modal-title flex items-center gap-sm">
-                <PlusCircle size={18} className="text-cyan" /> Add Manual Entry
+              <h3 className="section-title flex items-center gap-sm" style={{ fontSize: '1.1rem' }}>
+                <PlusCircle size={18} className="text-cyan" /> ADD MANUAL ENTRY
               </h3>
-              <button onClick={() => setManualRegModalOpen(false)} className="btn btn-ghost" style={{ padding: '0.25rem' }}>
-                <X size={16} />
-              </button>
             </div>
             <form onSubmit={handleManualRegSubmit} className="modal-body flex flex-col gap-md">
               <div className="form-group">
