@@ -42,19 +42,19 @@ export default function App() {
       <main className="flex-1 w-full">
         <AnimatePresence mode="wait">
           <Routes location={location} key={location.pathname}>
-            {/* Public Brand & Auth Routes */}
+            {/* Public Events & Auth Routes */}
             <Route path="/" element={<PageTransition><Home /></PageTransition>} />
             <Route path="/about" element={<PageTransition><About /></PageTransition>} />
+            <Route path="/events" element={<PageTransition><EventBrowse /></PageTransition>} />
+            <Route path="/events/:slug" element={<PageTransition><EventDetail /></PageTransition>} />
             <Route path="/login" element={<PageTransition><Login /></PageTransition>} />
             <Route path="/register" element={<PageTransition><Register /></PageTransition>} />
             <Route path="/forgot-password" element={<PageTransition><ForgotPassword /></PageTransition>} />
             <Route path="/reset-password" element={<PageTransition><ResetPassword /></PageTransition>} />
             <Route path="/admin/login" element={<PageTransition><AdminLoginPage /></PageTransition>} />
 
-            {/* Protected Participant Event Routes */}
+            {/* Protected Participant Routes */}
             <Route element={<ProtectedRoute />}>
-              <Route path="/events" element={<PageTransition><EventBrowse /></PageTransition>} />
-              <Route path="/events/:slug" element={<PageTransition><EventDetail /></PageTransition>} />
               <Route path="/dashboard" element={<PageTransition><UserDashboard /></PageTransition>} />
               <Route path="/profile" element={<PageTransition><ProfilePage /></PageTransition>} />
             </Route>

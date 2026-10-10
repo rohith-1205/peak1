@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import EventCard from '../components/EventCard';
-import { Calendar, ShieldCheck, Ticket, CheckCircle2, ArrowRight, Layers, Lock } from 'lucide-react';
+import { Calendar, ShieldCheck, Ticket, CheckCircle2, ArrowRight, Layers, Lock, Trophy } from 'lucide-react';
 import peak11Banner from '../assets/peak11.jpeg';
 import './Home.css';
 
@@ -214,6 +214,39 @@ export default function Home() {
                 Register Participant Account
               </Link>
             </div>
+          </div>
+        </section>
+      )}
+
+      {/* Live Leaderboards Section */}
+      {user && featuredEvents.some(e => e.hasLeaderboard) && (
+        <section className="container" style={{ marginTop: '2.5rem', marginBottom: '2.5rem' }}>
+          <div className="section-header">
+            <div>
+              <span className="label-eyebrow">LIVE STANDINGS</span>
+              <h2 className="section-title">Public Leaderboards</h2>
+            </div>
+          </div>
+          
+          <div className="grid grid-3 gap-md" style={{ marginTop: '1.5rem' }}>
+            {featuredEvents.filter(e => e.hasLeaderboard).map(event => (
+              <Link 
+                key={event._id} 
+                to={`/events/${event.slug}?tab=leaderboard`} 
+                className="card-mono" 
+                style={{ padding: '1.5rem', border: '1px solid var(--accent-amber)', background: 'linear-gradient(to bottom right, rgba(245, 158, 11, 0.05), transparent)' }}
+              >
+                <div className="flex items-center gap-sm" style={{ marginBottom: '1rem', color: 'var(--accent-amber)' }}>
+                  <Trophy size={24} />
+                  <span className="font-bold uppercase tracking-wider text-white" style={{ fontSize: '0.85rem' }}>{event.leaderboardTitle || 'Official Standings'}</span>
+                </div>
+                <h3 className="font-bold text-white mb-2" style={{ fontSize: '1.1rem' }}>{event.title}</h3>
+                <p className="text-dim text-sm mb-4">Live timing, lap scores, and position rankings.</p>
+                <span className="btn btn-secondary btn-sm w-full text-center flex items-center justify-center gap-xs" style={{ borderColor: 'rgba(245,158,11,0.3)', color: 'var(--accent-amber)' }}>
+                  View Live Leaderboard <ArrowRight size={14} />
+                </span>
+              </Link>
+            ))}
           </div>
         </section>
       )}

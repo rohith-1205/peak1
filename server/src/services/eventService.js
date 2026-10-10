@@ -32,7 +32,7 @@ const getEvents = async (query = {}, isAdmin = false) => {
   const filter = {};
 
   if (!isAdmin) {
-    filter.status = EVENT_STATUS.PUBLISHED;
+    filter.status = { $in: [EVENT_STATUS.PUBLISHED, EVENT_STATUS.REGISTRATION_CLOSED, EVENT_STATUS.COMPLETED] };
   } else if (status) {
     filter.status = status;
   }
@@ -197,6 +197,32 @@ const updateEvent = async (id, updateData, actorId) => {
     updateData.slug = slug;
   }
 
+  // Handle Capacity Changes to maintain correct availableSlots
+  if (updateData.isUnlimitedCapacity !== undefined) {
+    if (updateData.isUnlimitedCapacity && !event.isUnlimitedCapacity) {
+      // Switched to unlimited
+      event.availableSlots = 999999;
+    } else if (!updateData.isUnlimitedCapacity && event.isUnlimitedCapacity) {
+      // Switched from unlimited to limited
+      const existingCount = await Registration.countDocuments({
+        eventId: id,
+        status: { $in: ['CONFIRMED', 'CHECKED_IN', 'PAYMENT_PENDING'] }
+      });
+      const newCapacity = updateData.capacity !== undefined ? updateData.capacity : event.capacity;
+      event.availableSlots = Math.max(0, newCapacity - existingCount);
+    } else if (!updateData.isUnlimitedCapacity && !event.isUnlimitedCapacity) {
+      // Both limited, capacity changed
+      if (updateData.capacity !== undefined && updateData.capacity !== event.capacity) {
+        const capacityDiff = updateData.capacity - event.capacity;
+        event.availableSlots = Math.max(0, event.availableSlots + capacityDiff);
+      }
+    }
+  } else if (!event.isUnlimitedCapacity && updateData.capacity !== undefined && updateData.capacity !== event.capacity) {
+    // Capacity changed, isUnlimitedCapacity wasn't explicitly passed
+    const capacityDiff = updateData.capacity - event.capacity;
+    event.availableSlots = Math.max(0, event.availableSlots + capacityDiff);
+  }
+
   Object.assign(event, updateData);
   await event.save();
 
@@ -283,7 +309,9 @@ const archiveEvent = async (id, actorId) => {
 };
 
 const getEventCategories = async () => {
-  const categories = await Event.distinct('category', { status: EVENT_STATUS.PUBLISHED });
+  const categories = await Event.distinct('category', { 
+    status: { $in: [EVENT_STATUS.PUBLISHED, EVENT_STATUS.REGISTRATION_CLOSED, EVENT_STATUS.COMPLETED] } 
+  });
   return categories;
 };
 
@@ -314,6 +342,7 @@ const getEventLeaderboard = async (slugOrId) => {
   const leaderboard = registrations.map((reg, index) => ({
     registrationId: reg.registrationId,
     participantName: reg.participantDetails?.fullName || 'Anonymous Participant',
+    mobileNumber: reg.participantDetails?.phone || '',
     city: reg.participantDetails?.city || '',
     vehicleModel: reg.raceDetails?.vehicleModel || '',
     vehicleNumber: reg.raceDetails?.vehicleNumber || '',

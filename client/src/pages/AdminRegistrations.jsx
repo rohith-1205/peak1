@@ -91,20 +91,50 @@ export default function AdminRegistrations() {
     }
   };
 
-  const handleExportPDF = () => {
-    const token = localStorage.getItem('peak1_admin_token');
-    let url = `/api/v1/registrations/admin/export?token=${token}`;
-    if (eventFilter) url += `&eventId=${eventFilter}`;
-    if (statusFilter) url += `&status=${statusFilter}`;
-    window.open(url, '_blank');
+  const handleExportPDF = async () => {
+    try {
+      const params = new URLSearchParams();
+      if (eventFilter) params.append('eventId', eventFilter);
+      if (statusFilter) params.append('status', statusFilter);
+
+      const blob = await adminApi.get(`/registrations/admin/export?${params.toString()}`, {
+        responseType: 'blob'
+      });
+
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `participants_roster_${Date.now()}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      showToast(err.message || 'Failed to download PDF roster', 'error');
+    }
   };
 
-  const handleExportCSV = () => {
-    const token = localStorage.getItem('peak1_admin_token');
-    let url = `/api/v1/registrations/admin/export/csv?token=${token}`;
-    if (eventFilter) url += `&eventId=${eventFilter}`;
-    if (statusFilter) url += `&status=${statusFilter}`;
-    window.open(url, '_blank');
+  const handleExportCSV = async () => {
+    try {
+      const params = new URLSearchParams();
+      if (eventFilter) params.append('eventId', eventFilter);
+      if (statusFilter) params.append('status', statusFilter);
+
+      const blob = await adminApi.get(`/registrations/admin/export/csv?${params.toString()}`, {
+        responseType: 'blob'
+      });
+
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `participants_roster_${Date.now()}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      showToast(err.message || 'Failed to download CSV roster', 'error');
+    }
   };
 
   const handlePerformCheckIn = async (e) => {

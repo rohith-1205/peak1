@@ -686,7 +686,7 @@ const deleteRegistration = async (id, actorId) => {
   }
 
   const event = await Event.findById(reg.eventId);
-  if (event && !event.isUnlimitedCapacity && reg.status !== REGISTRATION_STATUS.CANCELLED) {
+  if (event && !event.isUnlimitedCapacity && reg.status !== REGISTRATION_STATUS.CANCELLED && reg.status !== 'PAYMENT_FAILED') {
     event.availableSlots = Math.min(event.capacity, event.availableSlots + 1);
     await event.save();
   }

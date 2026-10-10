@@ -135,6 +135,12 @@ const verifyPayment = async ({ razorpayOrderId, razorpayPaymentId, razorpaySigna
     registration.status = REGISTRATION_STATUS.PAYMENT_FAILED;
     await registration.save();
 
+    const event = await Event.findById(registration.eventId);
+    if (event && !event.isUnlimitedCapacity) {
+      event.availableSlots = Math.min(event.capacity, event.availableSlots + 1);
+      await event.save();
+    }
+
     const error = new Error('Payment signature verification failed');
     error.statusCode = 400;
     error.errorCode = 'INVALID_PAYMENT_SIGNATURE';

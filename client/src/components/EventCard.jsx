@@ -101,7 +101,7 @@ export default function EventCard({ event }) {
               to={`/events/${event.slug}`}
               className="btn btn-secondary btn-sm w-full flex-between"
             >
-              <span>View Details & Register</span>
+              <span>{event.status === 'PUBLISHED' ? 'View Details & Register' : 'View Details'}</span>
               <ArrowRight size={14} />
             </Link>
           )}

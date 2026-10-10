@@ -518,60 +518,6 @@ export default function EventDetail() {
             </div>
           </div>
 
-          {/* Top 3 Winner Podium */}
-          {leaderboardData.length >= 3 && !leaderboardSearch && (
-            <div className="grid grid-3 gap-md items-end" style={{ marginBlock: '0.5rem' }}>
-              {/* 2nd Place */}
-              <div className="card-mono text-center flex flex-col items-center gap-xs" style={{ padding: '1.25rem', backgroundColor: 'rgba(255, 255, 255, 0.02)' }}>
-                <div style={{ width: '2.5rem', height: '2.5rem', borderRadius: '9999px', backgroundColor: 'rgba(255,255,255,0.08)', border: '1px solid var(--border-medium)', color: '#E2E8F0', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '0.8125rem' }}>
-                  🥈 2nd
-                </div>
-                <h4 className="font-bold text-white truncate w-full" style={{ fontSize: '0.95rem' }}>
-                  {leaderboardData[1].participantName}
-                </h4>
-                <span className="text-dim font-mono" style={{ fontSize: '0.725rem' }}>
-                  {leaderboardData[1].vehicleModel || 'Participant'}
-                </span>
-                <div className="badge" style={{ marginTop: '0.5rem', fontSize: '0.7rem' }}>
-                  Score / Lap: {leaderboardData[1].leaderboardScore > 0 ? leaderboardData[1].leaderboardScore : 'Runner Up'}
-                </div>
-              </div>
-
-              {/* 1st Place (Gold Winner) */}
-              <div className="card-mono text-center flex flex-col items-center gap-xs" style={{ padding: '1.5rem', background: 'linear-gradient(to bottom, rgba(245, 158, 11, 0.15), rgba(15, 23, 42, 0.95))', border: '1px solid rgba(245, 158, 11, 0.4)' }}>
-                <div style={{ width: '3rem', height: '3rem', borderRadius: '9999px', backgroundColor: 'rgba(245, 158, 11, 0.2)', border: '2px solid var(--accent-amber)', color: 'var(--accent-amber)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '1rem' }}>
-                  🥇 1st
-                </div>
-                <span className="label-eyebrow" style={{ fontSize: '0.6rem', color: 'var(--accent-amber)' }}>EVENT CHAMPION</span>
-                <h4 className="font-extrabold text-white truncate w-full" style={{ fontSize: '1.125rem' }}>
-                  {leaderboardData[0].participantName}
-                </h4>
-                <span className="text-dim font-mono" style={{ fontSize: '0.75rem' }}>
-                  {leaderboardData[0].vehicleModel || 'Champion Racer'}
-                </span>
-                <div className="badge badge-amber" style={{ marginTop: '0.5rem', padding: '0.35rem 0.75rem', fontSize: '0.75rem' }}>
-                  Score / Time: {leaderboardData[0].leaderboardScore > 0 ? leaderboardData[0].leaderboardScore : 'Winner'}
-                </div>
-              </div>
-
-              {/* 3rd Place */}
-              <div className="card-mono text-center flex flex-col items-center gap-xs" style={{ padding: '1.25rem', backgroundColor: 'rgba(255, 255, 255, 0.02)' }}>
-                <div style={{ width: '2.5rem', height: '2.5rem', borderRadius: '9999px', backgroundColor: 'rgba(255,255,255,0.08)', border: '1px solid var(--border-medium)', color: '#CBD5E1', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '0.8125rem' }}>
-                  🥉 3rd
-                </div>
-                <h4 className="font-bold text-white truncate w-full" style={{ fontSize: '0.95rem' }}>
-                  {leaderboardData[2].participantName}
-                </h4>
-                <span className="text-dim font-mono" style={{ fontSize: '0.725rem' }}>
-                  {leaderboardData[2].vehicleModel || 'Participant'}
-                </span>
-                <div className="badge" style={{ marginTop: '0.5rem', fontSize: '0.7rem' }}>
-                  Score / Lap: {leaderboardData[2].leaderboardScore > 0 ? leaderboardData[2].leaderboardScore : '3rd Place'}
-                </div>
-              </div>
-            </div>
-          )}
-
           {/* Standings Table */}
           {loadingLeaderboard ? (
             <div className="card-mono text-center text-muted font-mono" style={{ padding: '2.5rem', fontSize: '0.75rem' }}>
@@ -583,10 +529,8 @@ export default function EventDetail() {
               const q = leaderboardSearch.toLowerCase();
               return (
                 item.participantName.toLowerCase().includes(q) ||
-                item.vehicleModel.toLowerCase().includes(q) ||
-                item.vehicleNumber.toLowerCase().includes(q) ||
-                item.registrationId.toLowerCase().includes(q) ||
-                item.teamName.toLowerCase().includes(q)
+                item.mobileNumber.toLowerCase().includes(q) ||
+                item.registrationId.toLowerCase().includes(q)
               );
             });
 
@@ -609,11 +553,10 @@ export default function EventDetail() {
                     <thead>
                       <tr>
                         <th style={{ width: '90px' }}>Rank</th>
-                        <th>Participant Name</th>
-                        <th>Vehicle / Details</th>
-                        <th>Team / Squad</th>
+                        <th>Name</th>
                         <th>Pass ID</th>
-                        <th style={{ textAlign: 'right' }}>Score / Time</th>
+                        <th>Mobile Number</th>
+                        <th style={{ textAlign: 'right' }}>Score</th>
                         <th style={{ textAlign: 'center' }}>Gate Status</th>
                       </tr>
                     </thead>
@@ -628,14 +571,9 @@ export default function EventDetail() {
                           </td>
                           <td>
                             <span className="font-bold text-white block" style={{ fontSize: '0.8125rem' }}>{item.participantName}</span>
-                            {item.city && <span className="text-dim" style={{ fontSize: '0.725rem' }}>{item.city}</span>}
                           </td>
-                          <td>
-                            <span className="font-mono text-white block" style={{ fontSize: '0.75rem' }}>{item.vehicleModel || '-'}</span>
-                            {item.vehicleNumber && <span className="text-dim font-mono" style={{ fontSize: '0.675rem' }}>{item.vehicleNumber}</span>}
-                          </td>
-                          <td className="text-muted" style={{ fontSize: '0.8125rem' }}>{item.teamName || '-'}</td>
                           <td className="font-mono text-dim whitespace-nowrap" style={{ fontSize: '0.75rem' }}>{item.registrationId}</td>
+                          <td className="text-muted" style={{ fontSize: '0.8125rem' }}>{item.mobileNumber || '-'}</td>
                           <td className="font-mono font-bold text-white whitespace-nowrap" style={{ textAlign: 'right' }}>
                             {item.leaderboardScore > 0 ? (
                               <span className="badge badge-emerald">
